@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXE | Catálogo </title>
+    <link rel="stylesheet" href="/css/catalogo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span>LUXE</span>STYLE
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar productos...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#">Novedades</a></li>
+                    <li><a href="#">Hombre</a></li>
+                    <li><a href="#">Mujer</a></li>
+                    <li><a href="#">Ofertas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="filters">
+            <div class="filters-header">
+                <h3 class="filters-title">Filtros</h3>
+                <button class="reset-filters">Restablecer</button>
+            </div>
+            
+            <div class="filter-group">
+                <label for="categoryFilter">Categoría</label>
+                <select id="categoryFilter">
+                    <option value="all">Todas las categorías</option>
+                    <option value="camisas">Camisas</option>
+                    <option value="pantalones">Pantalones</option>
+                    <option value="vestidos">Vestidos</option>
+                    <option value="abrigos">Abrigos</option>
+                    <option value="zapatos">Zapatos</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="priceFilter">Rango de precios</label>
+                <select id="priceFilter">
+                    <option value="all">Todos los precios</option>
+                    <option value="0-100">Menos de S/100</option>
+                    <option value="100-200">S/100 - S/200</option>
+                    <option value="200-500">S/200 - S/500</option>
+                    <option value="500+">Más de S/500</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sizeFilter">Talla</label>
+                <select id="sizeFilter">
+                    <option value="all">Todas las tallas</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="colorFilter">Color</label>
+                <select id="colorFilter">
+                    <option value="all">Todos los colores</option>
+                    <option value="negro">Negro</option>
+                    <option value="blanco">Blanco</option>
+                    <option value="azul">Azul</option>
+                    <option value="rojo">Rojo</option>
+                    <option value="verde">Verde</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="product-container">
+            <div class="product-grid" id="productGrid">
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>LUXE STYLE</h3>
+                <p>Moda premium con estilo y elegancia para el cliente exigente.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Av. La Marina 123, Lima</p>
+                <p><i class="fas fa-phone"></i> +51 987 654 321</p>
+                <p><i class="fas fa-envelope"></i> info@luxestyle.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Horario</h3>
+                <p>Lunes - Viernes: 9am - 8pm</p>
+                <p>Sábado: 10am - 6pm</p>
+                <p>Domingo: Cerrado</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 LUXE STYLE. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="/js/catalogo.js"></script>
+</body>
+</html>
