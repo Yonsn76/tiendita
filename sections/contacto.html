@@ -1,11 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>contacto</title>
+    <title>Mercado Libre Careers</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+
+    <!-- Sección de Cabecera -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>ÚNETE A TIENDITA</h1>
+            <p>Transforma el futuro del comercio y la tecnología con nosotros.</p>
+            <a href="#jobs" class="cta-button">Ver Vacantes</a>
+        </div>
+    </header>
+
+    <!-- Propósito y Misión de la Empresa -->
+    <section class="company-mission">
+        <h2>Propósito y Misión</h2>
+        <p>
+            En nuestra empresa, nos dedicamos a la venta de ropa de alta calidad para que puedas expresar tu estilo personal con prendas cómodas y modernas. 
+            Nuestro propósito es ofrecer una amplia gama de ropa que se adapte a todos los gustos y necesidades, manteniendo siempre los más altos estándares de calidad.
+        </p>
+        <p>
+            <strong>Misión:</strong> Proveer ropa accesible, moderna y sostenible, brindando una experiencia de compra única a nuestros clientes.
+        </p>
+    </section>
+
+    <!-- Carrusel de Imágenes de Productos -->
+    <section class="product-carousel">
+        <h2>Nuestros Productos</h2>
+        <div class="carousel">
+            <div class="carousel-item">
+                <img src="https://via.placeholder.com/800x500/0000FF/808080?text=Producto+1" alt="Producto 1">
+            </div>
+            <div class="carousel-item">
+                <img src="https://via.placeholder.com/800x500/FF5733/FFFFFF?text=Producto+2" alt="Producto 2">
+            </div>
+            <div class="carousel-item">
+                <img src="https://via.placeholder.com/800x500/28A745/FFFFFF?text=Producto+3" alt="Producto 3">
+            </div>
+        </div>
+        <button class="carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <button class="carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+    </section>
+
+
+    <!-- Sección de Beneficios -->
+    <section class="benefits">
+        <h2>¿Por qué trabajar con nosotros?</h2>
+        <div class="benefit">
+            <h3>Innovación</h3>
+            <p>Trabajamos con las últimas tecnologías para resolver problemas reales.</p>
+        </div>
+        <div class="benefit">
+            <h3>Crecimiento</h3>
+            <p>Te acompañamos en cada paso de tu desarrollo profesional.</p>
+        </div>
+        <div class="benefit">
+            <h3>Comunidad</h3>
+            <p>Formamos un equipo diverso y colaborativo, donde cada voz cuenta.</p>
+        </div>
+    </section>
+
+    <!-- Sección de Vacantes -->
+    <section id="jobs" class="job-list">
+        <h2>Vacantes Disponibles</h2>
+        <div class="job">
+            <h3>Ingeniero de Software</h3>
+            <p>Ubicación: Buenos Aires</p>
+            <a href="#" class="cta-button">Postúlate</a>
+        </div>
+        <div class="job">
+            <h3>Product Manager</h3>
+            <p>Ubicación: Ciudad de México</p>
+            <a href="#" class="cta-button">Postúlate</a>
+        </div>
+        <div class="job">
+            <h3>Diseñador UX/UI</h3>
+            <p>Ubicación: Santiago de Chile</p>
+            <a href="#" class="cta-button">Postúlate</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 TIENDITA - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
