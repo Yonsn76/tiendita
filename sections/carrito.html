@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrito de Compras</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #ff4747;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #e63e3e;
+    }
+
+    .resumen {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    .resumen p {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .resumen strong {
+      font-size: 16px;
+      color: #000;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    .lista-direcciones div {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .lista-direcciones div:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h2>Carrito de Compras</h2>
+
+  <!-- Método de envío -->
+  <div class="section">
+    <label><input type="radio" name="envio" onclick="mostrarDireccion(false)"> Recoger en tienda</label>
+    <label><input type="radio" name="envio" onclick="mostrarDireccion(true)"> Envío a domicilio</label>
+  </div>
+
+  <!-- Dirección -->
+  <div class="section hidden" id="direccion-section">
+    <h3>Dirección de entrega</h3>
+    <div class="form-group"><input type="text" placeholder="Calle y número"></div>
+    <div class="form-group"><input type="text" placeholder="Ciudad"></div>
+    <div class="form-group"><input type="text" placeholder="Código Postal"></div>
+  </div>
+
+  <!-- Botón para abrir el modal -->
+  <button class="btn" onclick="abrirModal()">Agregar Dirección</button>
+
+  <!-- Modal -->
+  <div id="direccionModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal()">&times;</span>
+      <h3>Agregar Dirección</h3>
+      <div class="form-group"><input type="text" id="calle" placeholder="Calle y número"></div>
+      <div class="form-group"><input type="text" id="ciudad" placeholder="Ciudad"></div>
+      <div class="form-group"><input type="text" id="codigoPostal" placeholder="Código Postal"></div>
+      <button class="btn" onclick="guardarDireccion()">Guardar Dirección</button>
+    </div>
+  </div>
+
+  <!-- Lista de direcciones -->
+  <div id="listaDirecciones" class="section"></div>
+
+  <!-- Resumen de la dirección seleccionada -->
+  <div id="resumenDireccion" class="section hidden">
+    <h3>Dirección Seleccionada</h3>
+    <p id="direccionSeleccionada"></p>
+    <button class="btn" onclick="abrirModal()">Editar Dirección</button>
+  </div>
+
+  <!-- Método de pago -->
+  <div class="section">
+    <h3>Método de pago</h3>
+    <label><input type="radio" name="pago" onclick="mostrarTarjeta(true)"> Tarjeta de crédito</label>
+    <label><input type="radio" name="pago" onclick="mostrarTarjeta(false)"> Yape</label>
+    <label><input type="radio" name="pago" onclick="mostrarTarjeta(false)"> Plin</label>
+  </div>
+
+ 
+
+  <!-- Botón para abrir el modal de tarjeta -->
+  <button class="btn" onclick="abrirModalTarjeta()">Agregar Tarjeta</button>
+
+  <!-- Modal de tarjeta -->
+  <div id="tarjetaModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalTarjeta()">&times;</span>
+      <h3>Agregar Tarjeta</h3>
+      <div class="form-group"><input type="text" id="nombreTarjeta" placeholder="Nombre en la tarjeta"></div>
+      <div class="form-group"><input type="text" id="numeroTarjeta" placeholder="Número de tarjeta"></div>
+      <div class="form-group"><input type="text" id="fechaVencimiento" placeholder="Fecha de vencimiento (MM/AA)"></div>
+      <div class="form-group"><input type="text" id="cvv" placeholder="CVV"></div>
+      <button class="btn" onclick="guardarTarjeta()">Guardar Tarjeta</button>
+    </div>
+  </div>
+
+  <!-- Lista de tarjetas -->
+  <div id="listaTarjetas" class="section"></div>
+
+  <!-- Resumen de la tarjeta seleccionada -->
+  <div id="resumenTarjeta" class="section hidden">
+    <h3>Tarjeta Seleccionada</h3>
+    <p id="tarjetaSeleccionada"></p>
+    <button class="btn" onclick="abrirModalTarjeta()">Editar Tarjeta</button>
+  </div>
+
+  <!-- Resumen -->
+  <div class="section">
+    <h3>Resumen del Pedido</h3>
+    <div class="resumen">
+      <p><span>Subtotal:</span><span>PEN 25.00</span></p>
+      <p><span>Envío:</span><span>Gratis</span></p>
+      <p><strong><span>Total:</span><span>PEN 25.00</span></strong></p>
+    </div>
+  </div>
+
+  <button class="btn" onclick="mostrarBoleta()">Finalizar Compra</button>
+
+  <!-- Modal de Boleta con diseño actualizado -->
+  <div id="boletaModal" class="modal">
+    <div class="modal-content" style="background-color: #ffe6e6; border-radius: 10px; padding: 20px; max-width: 400px; margin: auto;">
+      <h3 style="font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 20px;">CHECKOUT</h3>
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">SHIPPING</h4>
+        <p style="font-size: 14px; margin: 0;">221B Baker Street, W1U 8ED</p>
+        <p style="font-size: 14px; margin: 0;">London, United Kingdom</p>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">PAYMENT METHOD</h4>
+        <p style="font-size: 14px; margin: 0;">Visa</p>
+        <p style="font-size: 14px; margin: 0;">**** **** **** 4243</p>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">HAVE A PROMO CODE?</h4>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" placeholder="Enter a Promo Code" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+          <button style="background-color: #ff9999; color: white; border: none; border-radius: 5px; padding: 10px 15px; font-size: 14px; cursor: pointer;">Apply</button>
+        </div>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">PAYMENT</h4>
+        <p style="font-size: 14px; margin: 0;">Subtotal: <span style="float: right;">$240.00</span></p>
+        <p style="font-size: 14px; margin: 0;">Shipping: <span style="float: right;">$10.00</span></p>
+        <p style="font-size: 14px; margin: 0;">Tax: <span style="float: right;">$30.40</span></p>
+      </div>
+      <div style="background-color: #ffcccc; padding: 15px; border-radius: 5px; text-align: center;">
+        <h3 style="font-size: 18px; font-weight: bold; margin: 0;">$280.40</h3>
+      </div>
+      <button style="background-color: #ff4747; color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px;">Checkout</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let envioSeleccionado = "";
+  let pagoSeleccionado = "";
+  let tarjetas = [];
+  let direcciones = [];
+
+  function mostrarDireccion(mostrar) {
+    envioSeleccionado = mostrar ? "Envío a domicilio" : "Recoger en tienda";
+    document.getElementById('direccion-section').style.display = mostrar ? 'block' : 'none';
+  }
+
+  function mostrarTarjeta(mostrar) {
+    pagoSeleccionado = mostrar ? "Tarjeta de crédito" : "Pago móvil";
+    document.getElementById('tarjeta-section').style.display = mostrar ? 'block' : 'none';
+  }
+
+  function mostrarBoleta() {
+    document.getElementById('envioResumen').innerText = envioSeleccionado || "No especificado";
+    document.getElementById('pagoResumen').innerText = pagoSeleccionado || "No especificado";
+    document.getElementById('boletaModal').style.display = 'block';
+  }
+
+  function cerrarModalBoleta() {
+    document.getElementById('boletaModal').style.display = 'none';
+  }
+
+  function abrirModal() {
+    document.getElementById('direccionModal').style.display = 'block';
+  }
+
+  function cerrarModal() {
+    document.getElementById('direccionModal').style.display = 'none';
+  }
+
+  function guardarDireccion() {
+    const calle = document.getElementById('calle').value;
+    const ciudad = document.getElementById('ciudad').value;
+    const codigoPostal = document.getElementById('codigoPostal').value;
+
+    if (calle && ciudad && codigoPostal) {
+      const direccion = `${calle}, ${ciudad}, ${codigoPostal}`;
+      direcciones.push(direccion);
+      actualizarListaDirecciones();
+      cerrarModal();
+    } else {
+      alert('Por favor, complete todos los campos.');
+    }
+  }
+
+  function actualizarListaDirecciones() {
+    const listaDirecciones = document.getElementById('listaDirecciones');
+    listaDirecciones.innerHTML = '';
+    direcciones.forEach((direccion, index) => {
+      const direccionElement = document.createElement('div');
+      direccionElement.innerHTML = `
+        <label>
+          <input type="radio" name="direccionSeleccionada" value="${index}" onclick="seleccionarDireccion(${index})">
+          ${direccion}
+        </label>
+      `;
+      listaDirecciones.appendChild(direccionElement);
+    });
+  }
+
+  function seleccionarDireccion(index) {
+    const direccion = direcciones[index];
+    document.getElementById('direccionSeleccionada').innerText = direccion;
+    document.getElementById('resumenDireccion').style.display = 'block';
+  }
+
+  function abrirModalTarjeta() {
+    document.getElementById('tarjetaModal').style.display = 'block';
+  }
+
+  function cerrarModalTarjeta() {
+    document.getElementById('tarjetaModal').style.display = 'none';
+  }
+
+  function guardarTarjeta() {
+    const nombreTarjeta = document.getElementById('nombreTarjeta').value;
+    const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+    const fechaVencimiento = document.getElementById('fechaVencimiento').value;
+    const cvv = document.getElementById('cvv').value;
+
+    if (nombreTarjeta && numeroTarjeta && fechaVencimiento && cvv) {
+      const ultimosDigitos = numeroTarjeta.slice(-4);
+      const tarjeta = {
+        titular: nombreTarjeta,
+        numero: `**** **** **** ${ultimosDigitos}`,
+        vencimiento: fechaVencimiento
+      };
+      tarjetas.push(tarjeta);
+      actualizarListaTarjetas();
+      cerrarModalTarjeta();
+    } else {
+      alert('Por favor, complete todos los campos.');
+    }
+  }
+
+  function actualizarListaTarjetas() {
+    const listaTarjetas = document.getElementById('listaTarjetas');
+    listaTarjetas.innerHTML = '';
+    tarjetas.forEach((tarjeta, index) => {
+      const tarjetaElement = document.createElement('div');
+      tarjetaElement.innerHTML = `
+        <label>
+          <input type="radio" name="tarjetaSeleccionada" value="${index}" onclick="seleccionarTarjeta(${index})">
+          Titular: ${tarjeta.titular}, Número: ${tarjeta.numero}
+        </label>
+      `;
+      listaTarjetas.appendChild(tarjetaElement);
+    });
+  }
+
+  function seleccionarTarjeta(index) {
+    const tarjeta = tarjetas[index];
+    document.getElementById('tarjetaSeleccionada').innerText = `Titular: ${tarjeta.titular}, Número: ${tarjeta.numero}`;
+    document.getElementById('resumenTarjeta').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
