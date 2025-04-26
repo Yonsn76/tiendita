@@ -324,7 +324,8 @@ function generarBoleta() {
             break;
         case 'yape':
             textoMetodoPago = 'Yape';
-            detallePago = `Teléfono: ${document.getElementById('telefono-yape').value}`;
+            const emailYape = document.getElementById('yape-email')?.value || email;
+            detallePago = `Correo: ${emailYape}`;
             break;
         case 'paypal':
             textoMetodoPago = 'PayPal';
@@ -396,10 +397,9 @@ function cambiarMetodoPago(metodo) {
     
     // Ocultar todos los contenedores
     tarjetaContainer.style.display = 'none';
-    yapeContainer.style.display = 'none';
     paypalContainer.style.display = 'none';
-    
-    // Mostrar el contenedor seleccionado y activar el botón
+    document.getElementById('yape-contenedor').style.display = 'none';
+
     if (metodo === 'tarjeta') {
         btnTarjeta.classList.add('active');
         tarjetaContainer.style.display = 'flex';
@@ -407,7 +407,9 @@ function cambiarMetodoPago(metodo) {
         document.querySelector('input[name="metodo-pago"][value="tarjeta"]').checked = true;
     } else if (metodo === 'yape') {
         btnYape.classList.add('active');
-        yapeContainer.style.display = 'block';
+        document.getElementById('yape-contenedor').style.display = 'flex';
+        document.getElementById('yape-paso-1').style.display = 'block';
+        document.getElementById('yape-paso-2').style.display = 'none';
         separatorText.textContent = 'pagar con Yape';
         document.querySelector('input[name="metodo-pago"][value="yape"]').checked = true;
     } else if (metodo === 'paypal') {
@@ -586,15 +588,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Número de tarjeta inválido');
                 return;
             }
-        } else if (metodoPago === 'yape') {
-            const telefonoYape = document.getElementById('telefono-yape').value;
-            if (!telefonoYape) {
-                alert('Por favor ingresa tu número de teléfono Yape');
+        } else if (metodoPago === 'paypal') {
+            const emailPaypal = document.getElementById('email-paypal').value;
+            if (!emailPaypal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailPaypal)) {
+                alert('Por favor ingresa un correo válido de PayPal.');
                 return;
             }
         }
-        
-        // Mostrar modal de carga
+        // Para Yape no se requiere validación adicional aquí, ya se validó antes el correo y términos.
+        // Mostrar modal de carga para todos los métodos
         mostrarModalConfirmacion();
     });
 
@@ -822,7 +824,7 @@ function mostrarModalConfirmacion() {
         carga.classList.remove('activo');
         exito.classList.add('activo');
         lanzarConfeti();
-    }, 1800);
+    }, 5000);
 }
 
 // Botón para ir a la boleta
@@ -879,4 +881,137 @@ function actualizarNotaDelivery() {
 document.addEventListener('DOMContentLoaded', actualizarNotaDelivery);
 document.querySelectorAll('input[name="metodo-entrega"]').forEach(radio => {
     radio.addEventListener('change', actualizarNotaDelivery);
+});
+
+// Función para actualizar el monto de Yape con el total del carrito
+function actualizarMontoYape() {
+    // Obtén el valor del total del carrito
+    var total = document.getElementById('total-carrito').textContent;
+    // Asigna ese valor al monto de Yape
+    document.getElementById('yape-monto').textContent = total;
+}
+
+// Llama a esta función cuando el usuario pase al paso de pago
+// Por ejemplo, si tienes un botón para ir al pago:
+document.getElementById('siguiente-pago').addEventListener('click', function() {
+    actualizarMontoYape();
+    mostrarFechaLimitePagoYape();
+});
+
+function mostrarFechaLimitePagoYape() {
+    // Si el input de fecha existe y tiene valor, úsalo, si no, suma 4 días
+    let fechaLimite;
+    const inputFecha = document.getElementById('input-fecha-limite');
+    if (inputFecha && inputFecha.value) {
+        fechaLimite = new Date(inputFecha.value + "T23:59:59");
+    } else {
+        fechaLimite = new Date();
+        fechaLimite.setDate(fechaLimite.getDate() + 4);
+    }
+    const fechaFormateada = fechaLimite.toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const horaFormateada = fechaLimite.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: true });
+    document.getElementById('yape-fecha-limite').innerHTML =
+        `Paga antes del <b>${fechaFormateada}</b> - <b>${horaFormateada}</b>`;
+}
+
+// Si el input de fecha cambia, actualiza la fecha máxima
+const inputFecha = document.getElementById('input-fecha-limite');
+if (inputFecha) {
+    inputFecha.addEventListener('change', mostrarFechaLimitePagoYape);
+}
+
+document.getElementById('btn-pagar-paypal')?.addEventListener('click', function() {
+    const emailPaypal = document.getElementById('email-paypal').value;
+    const btnPaypal = this;
+    if (!emailPaypal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailPaypal)) {
+        alert('Por favor ingresa un correo válido de PayPal.');
+        return;
+    }
+    // Abre la ventana de PayPal
+    const paypalWindow = window.open(
+        'https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&pageState=login&token=EC-14306603AP296960B',
+        '_blank'
+    );
+    // Cambia el estilo y texto del botón inmediatamente
+    btnPaypal.classList.add('paid');
+    btnPaypal.innerHTML = '<span class="check">✔</span><span class="text">Pago Exitoso</span>';
+    btnPaypal.disabled = true;
+    // Simula el pago exitoso cuando la ventana se cierra
+    const timer = setInterval(function() {
+        if (paypalWindow.closed) {
+            clearInterval(timer);
+            // Aquí puedes marcar el pago como realizado y avanzar al siguiente paso
+            setTimeout(() => {
+                mostrarModalConfirmacion();
+            }, 1200);
+        }
+    }, 1000);
+});
+
+// Mostrar paso 1 de Yape al seleccionar el método
+document.getElementById('btn-yape').addEventListener('click', function() {
+    document.getElementById('yape-paso-1').style.display = 'block';
+    document.getElementById('yape-paso-2').style.display = 'none';
+    // Actualiza monto y fecha
+    const monto = document.getElementById('total-carrito').textContent;
+    document.getElementById('yape-monto-paso1').textContent = monto;
+    const fechaLimite = new Date();
+    fechaLimite.setDate(fechaLimite.getDate() + 4);
+    const fechaStr = fechaLimite.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const horaStr = fechaLimite.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('yape-expira-paso1').innerHTML = `Tu transacción expirará el <b>${fechaStr}</b> a las <b>${horaStr}</b>`;
+});
+
+// Validación en tiempo real
+const yapeEmail = document.getElementById('yape-email');
+const yapeTerminos = document.getElementById('yape-terminos');
+const yapeBtn = document.getElementById('yape-generar-qr');
+const yapeError = document.getElementById('yape-email-error');
+
+function validarYapePaso1() {
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(yapeEmail.value.trim());
+    const terminosOk = yapeTerminos.checked;
+    if (!emailValido && yapeEmail.value.trim() !== '') {
+        yapeError.style.display = 'block';
+    } else {
+        yapeError.style.display = 'none';
+    }
+    yapeBtn.disabled = !(emailValido && terminosOk);
+    yapeBtn.style.opacity = yapeBtn.disabled ? '0.7' : '1';
+    yapeBtn.style.cursor = yapeBtn.disabled ? 'not-allowed' : 'pointer';
+}
+yapeEmail.addEventListener('input', validarYapePaso1);
+yapeTerminos.addEventListener('change', validarYapePaso1);
+
+// Al hacer clic en "Generar código QR"
+yapeBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (yapeBtn.disabled) return;
+    // Mostrar paso 2 y ocultar paso 1
+    document.getElementById('yape-paso-1').style.display = 'none';
+    document.getElementById('yape-paso-2').style.display = 'block';
+
+    // Mostrar datos en el paso 2
+    const email = yapeEmail.value.trim();
+    const monto = document.getElementById('total-carrito').textContent;
+    document.getElementById('yape-monto-paso2').textContent = monto;
+    document.getElementById('yape-email-mostrado').textContent = email;
+
+    // Fecha de expiración (4 días después)
+    const fechaLimite = new Date();
+    fechaLimite.setDate(fechaLimite.getDate() + 4);
+    const fechaStr = fechaLimite.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const horaStr = fechaLimite.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('yape-expira-paso2').innerHTML = `Tu transacción expirará el <b>${fechaStr}</b> a las <b>${horaStr}</b>`;
+
+    // Animación de carga y éxito
+    document.getElementById('yape-estado-pago').textContent = "Esperando confirmación de pago...";
+    document.getElementById('yape-loader').style.display = "block";
+    document.getElementById('yape-exito').style.display = "none";
+
+    setTimeout(function() {
+        document.getElementById('yape-estado-pago').textContent = "¡Pago exitoso!";
+        document.getElementById('yape-loader').style.display = "none";
+        document.getElementById('yape-exito').style.display = "block";
+    }, 5000); // 5 segundos
 });
