@@ -410,7 +410,7 @@ function cambiarMetodoPago(metodo) {
         document.getElementById('yape-contenedor').style.display = 'flex';
         document.getElementById('yape-paso-1').style.display = 'block';
         document.getElementById('yape-paso-2').style.display = 'none';
-        separatorText.textContent = 'pagar con Yape';
+        separatorText.textContent = 'pagar por Qr';
         document.querySelector('input[name="metodo-pago"][value="yape"]').checked = true;
     } else if (metodo === 'paypal') {
         btnPaypal.classList.add('active');
@@ -422,15 +422,15 @@ function cambiarMetodoPago(metodo) {
 
 // Asignar eventos a los botones de método de pago
 if (btnTarjeta) {
-    btnTarjeta.addEventListener('click', () => cambiarMetodoPago('tarjeta'));
+    btnTarjeta.addEventListener('click', () => { cambiarMetodoPago('tarjeta'); validarBotonConfirmarPedido(); });
 }
 
 if (btnYape) {
-    btnYape.addEventListener('click', () => cambiarMetodoPago('yape'));
+    btnYape.addEventListener('click', () => { cambiarMetodoPago('yape'); validarBotonConfirmarPedido(); });
 }
 
 if (btnPaypal) {
-    btnPaypal.addEventListener('click', () => cambiarMetodoPago('paypal'));
+    btnPaypal.addEventListener('click', () => { cambiarMetodoPago('paypal'); validarBotonConfirmarPedido(); });
 }
 
 // Inicializar el método de pago por defecto
@@ -574,24 +574,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const metodoPago = document.querySelector('input[name="metodo-pago"]:checked').value;
         
         if (metodoPago === 'tarjeta') {
-            const numeroTarjeta = document.getElementById('numero-tarjeta').value;
-            const fechaVencimiento = document.getElementById('fecha-vencimiento').value;
-            const cvv = document.getElementById('cvv').value;
-            const nombreTarjeta = document.getElementById('nombre-tarjeta').value;
+            const nombre = document.getElementById('nombre-tarjeta').value.trim();
+            const numero = document.getElementById('numero-tarjeta').value.trim();
+            const fecha = document.getElementById('fecha-vencimiento').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
             
-            if (!numeroTarjeta || !fechaVencimiento || !cvv || !nombreTarjeta) {
+            if (!nombre || !numero || !fecha || !cvv || !detectarTipoTarjeta(numero)) {
                 alert('Por favor completa todos los campos de la tarjeta');
-                return;
-            }
-            
-            if (!detectarTipoTarjeta(numeroTarjeta)) {
-                alert('Número de tarjeta inválido');
                 return;
             }
         } else if (metodoPago === 'paypal') {
             const emailPaypal = document.getElementById('email-paypal').value;
+            const btnPaypal = document.getElementById('btn-pagar-paypal');
             if (!emailPaypal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailPaypal)) {
                 alert('Por favor ingresa un correo válido de PayPal.');
+                return;
+            }
+            // Validar que el pago haya sido realizado (botón deshabilitado y texto de éxito)
+            if (!btnPaypal.disabled || !btnPaypal.classList.contains('paid')) {
+                alert('Debes completar el pago con PayPal antes de confirmar la compra.');
                 return;
             }
         }
@@ -936,14 +937,13 @@ document.getElementById('btn-pagar-paypal')?.addEventListener('click', function(
     btnPaypal.classList.add('paid');
     btnPaypal.innerHTML = '<span class="check">✔</span><span class="text">Pago Exitoso</span>';
     btnPaypal.disabled = true;
+    validarBotonConfirmarPedido();
     // Simula el pago exitoso cuando la ventana se cierra
     const timer = setInterval(function() {
         if (paypalWindow.closed) {
             clearInterval(timer);
-            // Aquí puedes marcar el pago como realizado y avanzar al siguiente paso
-            setTimeout(() => {
-                mostrarModalConfirmacion();
-            }, 1200);
+            // Solo habilita el botón de confirmar pedido, no muestres el modal aquí
+            validarBotonConfirmarPedido();
         }
     }, 1000);
 });
@@ -1013,5 +1013,38 @@ yapeBtn.addEventListener('click', function(e) {
         document.getElementById('yape-estado-pago').textContent = "¡Pago exitoso!";
         document.getElementById('yape-loader').style.display = "none";
         document.getElementById('yape-exito').style.display = "block";
+        validarBotonConfirmarPedido();
     }, 5000); // 5 segundos
 });
+
+function validarBotonConfirmarPedido() {
+    const btnConfirmar = document.getElementById('confirmar-pedido');
+    const circuloRojo = document.getElementById('circulo-rojo');
+    const metodoPago = document.querySelector('input[name="metodo-pago"]:checked').value;
+
+    let habilitar = false;
+
+    if (metodoPago === 'tarjeta') {
+        const nombre = document.getElementById('nombre-tarjeta').value.trim();
+        const numero = document.getElementById('numero-tarjeta').value.trim();
+        const fecha = document.getElementById('fecha-vencimiento').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        habilitar = nombre && numero && fecha && cvv && detectarTipoTarjeta(numero);
+    } else if (metodoPago === 'yape') {
+        // El pago se considera exitoso si el mensaje es "¡Pago exitoso!"
+        const estadoPago = document.getElementById('yape-estado-pago');
+        habilitar = estadoPago && estadoPago.textContent.trim() === "¡Pago exitoso!";
+    } else if (metodoPago === 'paypal') {
+        // El pago se considera exitoso si el botón tiene la clase "paid" y está deshabilitado
+        const btnPaypal = document.getElementById('btn-pagar-paypal');
+        habilitar = btnPaypal && btnPaypal.classList.contains('paid') && btnPaypal.disabled;
+    }
+
+    btnConfirmar.disabled = !habilitar;
+    circuloRojo.style.display = habilitar ? 'none' : 'block';
+}
+
+document.getElementById('nombre-tarjeta').addEventListener('input', validarBotonConfirmarPedido);
+document.getElementById('numero-tarjeta').addEventListener('input', validarBotonConfirmarPedido);
+document.getElementById('fecha-vencimiento').addEventListener('input', validarBotonConfirmarPedido);
+document.getElementById('cvv').addEventListener('input', validarBotonConfirmarPedido);

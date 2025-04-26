@@ -3324,3 +3324,169 @@ textarea {
 .modal-contenido.activo {
   display: block;
 }
+
+.coolinput {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  position: static;
+  max-width: 240px;
+}
+
+.coolinput label.text {
+  font-size: 0.75rem;
+  color: #818CF8;
+  font-weight: 700;
+  position: relative;
+  top: 0.5rem;
+  margin: 0 0 0 7px;
+  padding: 0 3px;
+  background: #e8e8e8;
+  width: fit-content;
+}
+
+.coolinput input[type=text].input,
+.coolinput input[type=email].input,
+.coolinput input[type=tel].input,
+.coolinput input[type=password].input,
+.coolinput input[type=number].input {
+  padding: 11px 10px;
+  font-size: 0.75rem;
+  border: 2px #818CF8 solid;
+  border-radius: 5px;
+  background: #e8e8e8;
+}
+
+.coolinput input.input:focus {
+  outline: none;
+}
+
+@media (max-width: 600px) {
+    #nueva-direccion-form {
+        width: 98vw !important;
+        max-width: 99vw !important;
+        min-width: 0 !important;
+        padding: 12px 6px 18px 6px !important;
+        border-radius: 10px !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        max-height: 95vh !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+    }
+    #nueva-direccion-form h4 {
+        font-size: 1.1rem !important;
+        margin-bottom: 12px !important;
+        padding-bottom: 6px !important;
+    }
+    #nueva-direccion-form .form-group,
+    #nueva-direccion-form .form-row {
+        margin-bottom: 0.7rem !important;
+        gap: 0.5rem !important;
+    }
+    #nueva-direccion-form input,
+    #nueva-direccion-form textarea {
+        font-size: 0.98rem !important;
+        padding: 0.6rem 0.5rem !important;
+        border-radius: 6px !important;
+    }
+    #nueva-direccion-form .form-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    #nueva-direccion-form .form-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    #nueva-direccion-form button {
+        width: 100% !important;
+        min-width: 0 !important;
+        font-size: 1rem !important;
+        padding: 10px 0 !important;
+    }
+}
+
+.circulo-rojo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background: #e53935;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    z-index: 2;
+    display: none;
+}
+.icono-flecha {
+    position: relative;
+    display: inline-block;
+}
+.button[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-volver-tienda,
+.btn-descargar-boleta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #3498db 0%, #6dd5fa 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(52, 152, 219, 0.10);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+    outline: none;
+    margin: 0 10px;
+    min-width: 180px;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btn-volver-tienda .icono-btn,
+.btn-descargar-boleta .icono-btn {
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    color: #fff;
+    transition: color 0.2s;
+}
+
+.btn-volver-tienda:hover,
+.btn-descargar-boleta:hover {
+    background: linear-gradient(90deg, #217dbb 0%, #3498db 100%);
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(52, 152, 219, 0.18);
+    transform: translateY(-2px) scale(1.03);
+}
+
+.btn-volver-tienda:active,
+.btn-descargar-boleta:active {
+    background: #217dbb;
+    color: #fff;
+    transform: scale(0.98);
+}
+
+@media (max-width: 600px) {
+    .paso-navegacion.mejorada {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    .btn-volver-tienda,
+    .btn-descargar-boleta {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        margin: 0;
+    }
+}

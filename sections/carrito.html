@@ -22,7 +22,7 @@
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="2">
                 <div class="paso-circulo">2</div>
-                <span class="paso-label">Envío</span>
+                <span class="paso-label">Datos</span>
             </div>
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="3">
@@ -32,7 +32,7 @@
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="4">
                 <div class="paso-circulo">4</div>
-                <span class="paso-label">Confirmación</span>
+                <span class="paso-label">Compra realizado</span>
             </div>
         </div>
 
@@ -295,11 +295,10 @@
                             <img id="logo-tarjeta" src="https://cdn-icons-png.flaticon.com/512/633/633611.png" alt="Tarjeta de Crédito" style="height:32px;">
                         </button>
                         <button type="button" id="btn-yape" class="payment-option">
-                            <img src="/img/yape.png" alt="Pago por QR" style="height:32px;">
+                            <span class="text" style="font-size: 1.1em; color: #ff0000;">Pago por QR</span>
                         </button>
                         <button type="button" id="btn-paypal" class="payment-option">
                             <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" style="height:24px; margin-right:10px;">
-                            <span class="text">Pagar con PayPal</span>
                         </button>
                     </div>
                     
@@ -452,11 +451,14 @@
                         </div>
                     </div>
                     
-                    <button type="button" id="confirmar-pedido" class="button">
-                        <svg viewBox="0 0 16 16" class="bi bi-cart-check" height="24" width="24" xmlns="http://www.w3.org/2000/svg" fill="#fff">
-                            <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"></path>
-                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
-                        </svg>
+                    <button type="button" id="confirmar-pedido" class="button" disabled>
+                        <span class="icono-flecha">
+                            <svg viewBox="0 0 16 16" class="bi bi-cart-check" height="24" width="24" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+                                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"></path>
+                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+                            <span id="circulo-rojo" class="circulo-rojo" style="display:none;"></span>
+                        </span>
                         <span class="text">Confirmar Pedido</span>
                     </button>
                 </form>
@@ -543,9 +545,19 @@
                 </div>
             </div>
             
-            <div class="paso-navegacion">
-                <button class="btn-primary" id="volver-tienda">Volver a la Tienda</button>
-                <button class="btn-success" id="descargar-boleta">Descargar Boleta</button>
+            <div class="paso-navegacion mejorada">
+                <button class="btn-volver-tienda" id="volver-tienda">
+                    <span class="icono-btn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </span>
+                    Volver a la Tienda
+                </button>
+                <button class="btn-descargar-boleta" id="descargar-boleta">
+                    <span class="icono-btn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </span>
+                    Descargar Boleta
+                </button>
             </div>
         </div>
     </div>
