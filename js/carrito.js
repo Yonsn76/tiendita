@@ -36,7 +36,7 @@ function showStep(stepNumber) {
     if (currentStepElement) {
         currentStepElement.classList.remove('hidden');
         currentStep = stepNumber;
-        updateStepIndicators();
+        actualizarPasosCheckout(stepNumber);
     }
 }
 
@@ -161,38 +161,43 @@ function mostrarProductosCarrito() {
         return;
     }
     
-    let totalCarrito = 0;
+    let subtotalCarrito = 0;
+    let envio = 5.99;
     
     carrito.forEach(producto => {
         const subtotalProducto = producto.precio * producto.cantidad;
-        totalCarrito += subtotalProducto;
+        subtotalCarrito += subtotalProducto;
         
         const itemHTML = `
-            <div class="carrito-item">
-                <div class="carrito-item-img">
+            <div class="carrito-card">
+                <div class="card-img">
                     <img src="${producto.imagen || 'placeholder.jpg'}" alt="${producto.nombre}">
                 </div>
-                <div class="carrito-item-info">
-                    <h3>${producto.nombre}</h3>
-                    <p>S/ ${producto.precio.toFixed(2)}</p>
-                    ${producto.talla ? `<p class="item-talla">Talla: ${producto.talla}</p>` : ''}
+                <div class="card-title">${producto.nombre}</div>
+                ${producto.talla ? `<div class="card-subtitle">Talla: ${producto.talla}</div>` : ''}
+                <hr class="card-divider">
+                <div class="card-footer">
+                    <div>
+                        <button class="btn-cantidad" data-id="${producto.id}" data-talla="${producto.talla || ''}" data-action="restar">-</button>
+                        <input type="number" class="cantidad-input" value="${producto.cantidad}" min="1" max="10" data-id="${producto.id}" data-talla="${producto.talla || ''}">
+                        <button class="btn-cantidad" data-id="${producto.id}" data-talla="${producto.talla || ''}" data-action="sumar">+</button>
+                    </div>
+                    <div class="card-price"><span>S/</span> ${subtotalProducto.toFixed(2)}</div>
+                    <button class="btn-eliminar" data-id="${producto.id}" data-talla="${producto.talla || ''}" title="Eliminar">🗑️</button>
                 </div>
-                <div class="carrito-item-cantidad">
-                    <button class="btn-cantidad" data-id="${producto.id}" data-talla="${producto.talla || ''}" data-action="restar">-</button>
-                    <input type="number" value="${producto.cantidad}" min="1" max="10" data-id="${producto.id}" data-talla="${producto.talla || ''}">
-                    <button class="btn-cantidad" data-id="${producto.id}" data-talla="${producto.talla || ''}" data-action="sumar">+</button>
-                </div>
-                <div class="carrito-item-subtotal">
-                    S/ ${subtotalProducto.toFixed(2)}
-                </div>
-                <button class="btn-eliminar" data-id="${producto.id}" data-talla="${producto.talla || ''}">×</button>
             </div>
         `;
         carritoContainer.innerHTML += itemHTML;
     });
     
-    // Actualizar total del carrito
-    document.getElementById('total-carrito').textContent = totalCarrito.toFixed(2);
+    // Calcular IGV y total
+    const igv = subtotalCarrito * 0.18;
+    const total = subtotalCarrito + igv;
+    
+    // Actualizar resumen
+    document.getElementById('subtotal-carrito').textContent = subtotalCarrito.toFixed(2);
+    document.getElementById('igv-carrito').textContent = igv.toFixed(2);
+    document.getElementById('total-carrito').textContent = subtotalCarrito > 0 ? total.toFixed(2) : '0.00';
     document.getElementById('siguiente-envio').disabled = false;
     
     // Agregar event listeners a los botones de cantidad
@@ -285,7 +290,13 @@ function generarBoleta() {
         const direccion = document.getElementById('direccion').value;
         const ciudad = document.getElementById('ciudad').value;
         const codPostal = document.getElementById('codigo-postal').value;
-        document.getElementById('direccion-envio').textContent = `${direccion}, ${ciudad}, CP: ${codPostal}`;
+        document.getElementById('direccion-envio').innerHTML = `
+            ${direccion}, ${ciudad}, CP: ${codPostal}
+            <br>
+            <span style="color:#888; font-size:0.95em;">
+                Entrega en 1 a 7 días hábiles. Si no llega en ese plazo, se le devolverá su dinero.
+            </span>
+        `;
     } else {
         const tienda = document.getElementById('tienda').value;
         let nombreTienda = '';
@@ -366,6 +377,79 @@ function volverTienda() {
     window.location.href = '/sections/catalogo.html';
 }
 
+// Manejo de métodos de pago con el nuevo diseño
+const btnTarjeta = document.getElementById('btn-tarjeta');
+const btnYape = document.getElementById('btn-yape');
+const btnPaypal = document.getElementById('btn-paypal');
+
+const tarjetaContainer = document.getElementById('tarjeta-container');
+const yapeContainer = document.getElementById('yape-container');
+const paypalContainer = document.getElementById('paypal-container');
+const separatorText = document.getElementById('separator-text');
+
+// Función para cambiar entre métodos de pago
+function cambiarMetodoPago(metodo) {
+    // Quitar la clase active de todos los botones
+    btnTarjeta.classList.remove('active');
+    btnYape.classList.remove('active');
+    btnPaypal.classList.remove('active');
+    
+    // Ocultar todos los contenedores
+    tarjetaContainer.style.display = 'none';
+    yapeContainer.style.display = 'none';
+    paypalContainer.style.display = 'none';
+    
+    // Mostrar el contenedor seleccionado y activar el botón
+    if (metodo === 'tarjeta') {
+        btnTarjeta.classList.add('active');
+        tarjetaContainer.style.display = 'flex';
+        separatorText.textContent = 'pagar con tarjeta de crédito';
+        document.querySelector('input[name="metodo-pago"][value="tarjeta"]').checked = true;
+    } else if (metodo === 'yape') {
+        btnYape.classList.add('active');
+        yapeContainer.style.display = 'block';
+        separatorText.textContent = 'pagar con Yape';
+        document.querySelector('input[name="metodo-pago"][value="yape"]').checked = true;
+    } else if (metodo === 'paypal') {
+        btnPaypal.classList.add('active');
+        paypalContainer.style.display = 'block';
+        separatorText.textContent = 'pagar con PayPal';
+        document.querySelector('input[name="metodo-pago"][value="paypal"]').checked = true;
+    }
+}
+
+// Asignar eventos a los botones de método de pago
+if (btnTarjeta) {
+    btnTarjeta.addEventListener('click', () => cambiarMetodoPago('tarjeta'));
+}
+
+if (btnYape) {
+    btnYape.addEventListener('click', () => cambiarMetodoPago('yape'));
+}
+
+if (btnPaypal) {
+    btnPaypal.addEventListener('click', () => cambiarMetodoPago('paypal'));
+}
+
+// Inicializar el método de pago por defecto
+document.addEventListener('DOMContentLoaded', function() {
+    // Si el paso de pago está visible, inicializar la interfaz de método de pago
+    if (document.getElementById('paso-pago') && !document.getElementById('paso-pago').classList.contains('hidden')) {
+        cambiarMetodoPago('tarjeta');
+    }
+});
+
+// Actualizar cuando se muestra el paso de pago
+const siguientePagoBtn = document.getElementById('siguiente-pago');
+if (siguientePagoBtn) {
+    siguientePagoBtn.addEventListener('click', function() {
+        // Inicializar el método de pago cuando se muestra el paso
+        setTimeout(() => {
+            cambiarMetodoPago('tarjeta');
+        }, 100);
+    });
+}
+
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar mostrando productos en el carrito
@@ -404,6 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Manejo de tarjeta de crédito
     const numeroTarjeta = document.getElementById('numero-tarjeta');
     const tipoTarjeta = document.getElementById('tipo-tarjeta');
+    const logoTipoTarjeta = document.getElementById('logo-tipo-tarjeta');
     const fechaVencimiento = document.getElementById('fecha-vencimiento');
     
     if (numeroTarjeta) {
@@ -415,8 +500,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const tipo = detectarTipoTarjeta(this.value);
             if (tipo) {
                 tipoTarjeta.textContent = "Tarjeta detectada: " + tipo;
+                if (logosTarjetas[tipo]) {
+                    logoTipoTarjeta.src = logosTarjetas[tipo];
+                    logoTipoTarjeta.style.display = 'block';
+                    logoTipoTarjeta.alt = tipo;
+                } else {
+                    logoTipoTarjeta.style.display = 'none';
+                }
             } else {
                 tipoTarjeta.textContent = "";
+                logoTipoTarjeta.style.display = 'none';
             }
         });
     }
@@ -426,26 +519,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = formatearFechaVencimiento(this.value);
         });
     }
-
-    // Manejo de métodos de pago
-    const metodoPagoRadios = document.querySelectorAll('input[name="metodo-pago"]');
-    const formulariosPago = {
-        tarjeta: document.getElementById('formulario-tarjeta'),
-        yape: document.getElementById('formulario-yape'),
-        paypal: document.getElementById('formulario-paypal')
-    };
-
-    metodoPagoRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            Object.values(formulariosPago).forEach(form => {
-                if (form) form.classList.add('hidden');
-            });
-            const selectedForm = formulariosPago[this.value];
-            if (selectedForm) {
-                selectedForm.classList.remove('hidden');
-            }
-        });
-    });
 
     // Navegación entre pasos
     // Navegación hacia adelante
@@ -475,7 +548,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const codigoPostal = document.getElementById('codigo-postal').value;
             
             if (!direccion || !ciudad || !codigoPostal) {
-                alert('Por favor completa todos los campos de dirección');
+                // Si no hay dirección seleccionada y no hay direcciones guardadas
+                if (direcciones.length === 0) {
+                    alert('Necesitas agregar al menos una dirección de envío');
+                } else {
+                    alert('Por favor selecciona o completa todos los campos de dirección');
+                }
                 return;
             }
         } else if (metodoEntrega === 'recojo') {
@@ -516,12 +594,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Generar boleta y mostrar paso de confirmación
-        generarBoleta();
-        showStep(4);
-        
-        // Vaciar el carrito después de completar la compra
-        guardarCarrito([]);
+        // Mostrar modal de carga
+        mostrarModalConfirmacion();
     });
 
     // Navegación hacia atrás
@@ -540,6 +614,269 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/sections/catalogo.html';
     });
 
+    // Variables para manejar direcciones
+    let direcciones = [];
+    const direccionesGrid = document.getElementById('direcciones-grid');
+    const nuevaDireccionCard = document.getElementById('nueva-direccion-card');
+    const nuevaDireccionForm = document.getElementById('nueva-direccion-form');
+    const direccionSeleccionadaForm = document.getElementById('direccion-seleccionada-form');
+    
+    // Inicializar con array vacío (sin direcciones de ejemplo)
+    direcciones = [];
+    
+    // Función para mostrar las tarjetas de direcciones
+    function mostrarDirecciones() {
+        direccionesGrid.innerHTML = '';
+        
+        if (direcciones.length === 0) {
+            // Mostrar mensaje si no hay direcciones
+            const mensajeVacio = document.createElement('div');
+            mensajeVacio.className = 'direcciones-vacio';
+            mensajeVacio.innerHTML = `
+                <p>No tienes direcciones guardadas.</p>
+                <p>Agrega una dirección para continuar.</p>
+            `;
+            direccionesGrid.appendChild(mensajeVacio);
+            
+            // Si no hay direcciones, asegurarse de vaciar los campos
+            document.getElementById('direccion').value = '';
+            document.getElementById('ciudad').value = '';
+            document.getElementById('codigo-postal').value = '';
+            
+        } else {
+            // Mostrar las direcciones existentes
+            direcciones.forEach(dir => {
+                const dirCard = document.createElement('div');
+                dirCard.className = 'address-card-container';
+                dirCard.dataset.id = dir.id;
+                
+                dirCard.innerHTML = `
+                    <div class="canvas">
+                        <div class="tracker"></div>
+                        <div class="check-icon"></div>
+                        <div id="card">
+                            <div class="card-content">
+                                <div class="card-glare"></div>
+                                <div class="cyber-lines">
+                                    <span></span><span></span><span></span><span></span>
+                                </div>
+                                <div class="address-label">${dir.etiqueta}</div>
+                                <div class="address-details">
+                                    ${dir.direccion}<br>
+                                    ${dir.ciudad}, ${dir.codigoPostal}
+                                </div>
+                                <div class="corner-elements">
+                                    <span></span><span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                direccionesGrid.appendChild(dirCard);
+                
+                // Evento para seleccionar dirección
+                dirCard.querySelector('.tracker').addEventListener('click', function() {
+                    // Eliminar selección previa
+                    document.querySelectorAll('.address-card-container').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+                    
+                    // Marcar como seleccionada
+                    dirCard.classList.add('selected');
+                    
+                    // Llenar el formulario con los datos de la dirección seleccionada
+                    document.getElementById('direccion').value = dir.direccion;
+                    document.getElementById('ciudad').value = dir.ciudad;
+                    document.getElementById('codigo-postal').value = dir.codigoPostal;
+                });
+            });
+            
+            // Si hay direcciones, seleccionar la primera por defecto
+            if (direcciones.length > 0) {
+                const primeraCard = direccionesGrid.querySelector('.address-card-container');
+                if (primeraCard) {
+                    primeraCard.classList.add('selected');
+                    const dirId = parseInt(primeraCard.dataset.id);
+                    const dir = direcciones.find(d => d.id === dirId);
+                    
+                    document.getElementById('direccion').value = dir.direccion;
+                    document.getElementById('ciudad').value = dir.ciudad;
+                    document.getElementById('codigo-postal').value = dir.codigoPostal;
+                }
+            }
+        }
+    }
+    
+    // Mostrar el formulario para agregar dirección
+    if (nuevaDireccionCard) {
+        nuevaDireccionCard.addEventListener('click', function() {
+            document.getElementById('nueva-direccion-form').classList.add('visible');
+            document.getElementById('overlay').classList.add('visible');
+        });
+    }
+    
+    // Cancelar agregar dirección
+    document.getElementById('cancelar-direccion')?.addEventListener('click', function() {
+        document.getElementById('nueva-direccion-form').classList.remove('visible');
+        document.getElementById('overlay').classList.remove('visible');
+        
+        // Limpiar el formulario
+        document.getElementById('etiqueta-direccion').value = '';
+        document.getElementById('direccion-nueva').value = '';
+        document.getElementById('ciudad-nueva').value = '';
+        document.getElementById('codigo-postal-nuevo').value = '';
+        document.getElementById('referencias').value = '';
+    });
+    
+    // También cerrar el modal al hacer clic en el overlay
+    document.getElementById('overlay')?.addEventListener('click', function() {
+        document.getElementById('nueva-direccion-form').classList.remove('visible');
+        document.getElementById('overlay').classList.remove('visible');
+    });
+    
+    // Modificar el código para guardar dirección
+    document.getElementById('guardar-direccion')?.addEventListener('click', function() {
+        const etiqueta = document.getElementById('etiqueta-direccion').value;
+        const direccion = document.getElementById('direccion-nueva').value;
+        const ciudad = document.getElementById('ciudad-nueva').value;
+        const codigoPostal = document.getElementById('codigo-postal-nuevo').value;
+        const referencias = document.getElementById('referencias').value;
+        
+        if (!etiqueta || !direccion || !ciudad || !codigoPostal) {
+            alert('Por favor completa los campos obligatorios');
+            return;
+        }
+        
+        // Generar ID único (en una app real sería asignado por el backend)
+        const newId = direcciones.length > 0 ? Math.max(...direcciones.map(d => d.id)) + 1 : 1;
+        
+        // Agregar nueva dirección
+        direcciones.push({
+            id: newId,
+            etiqueta,
+            direccion,
+            ciudad,
+            codigoPostal,
+            referencias
+        });
+        
+        // Actualizar vista
+        mostrarDirecciones();
+        
+        // Ocultar formulario y overlay
+        document.getElementById('nueva-direccion-form').classList.remove('visible');
+        document.getElementById('overlay').classList.remove('visible');
+        
+        // Limpiar el formulario
+        document.getElementById('etiqueta-direccion').value = '';
+        document.getElementById('direccion-nueva').value = '';
+        document.getElementById('ciudad-nueva').value = '';
+        document.getElementById('codigo-postal-nuevo').value = '';
+        document.getElementById('referencias').value = '';
+    });
+    
+    // Inicializar la vista de direcciones
+    if (direccionesGrid) {
+        mostrarDirecciones();
+    }
+
     // Inicialización
     showStep(1);
+});
+
+// Diccionario de logos por tipo de tarjeta
+const logosTarjetas = {
+    "Visa": "https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png",
+    "Mastercard": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg",
+    "American Express": "https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg",
+    "Discover": "https://upload.wikimedia.org/wikipedia/commons/5/53/Discover_Card_logo.svg",
+    "Diners Club": "https://upload.wikimedia.org/wikipedia/commons/0/04/Diners_Club_Logo3.svg",
+    "JCB": "https://upload.wikimedia.org/wikipedia/commons/1/16/JCB_logo.svg"
+};
+
+// Cambia el número según el paso actual (1, 2, 3 o 4)
+function actualizarPasosCheckout(pasoActual) {
+    document.querySelectorAll('.paso-indicador').forEach((el, idx) => {
+        el.classList.remove('activo', 'completado');
+        if (idx + 1 < pasoActual) {
+            el.classList.add('completado');
+        } else if (idx + 1 === pasoActual) {
+            el.classList.add('activo');
+        }
+    });
+}
+
+function mostrarModalConfirmacion() {
+    const modal = document.getElementById('modal-confirmacion');
+    const carga = document.getElementById('modal-contenido-carga');
+    const exito = document.getElementById('modal-contenido-exito');
+    const confeti = document.getElementById('confeti');
+    modal.classList.add('activo');
+    carga.classList.add('activo');
+    exito.classList.remove('activo');
+    confeti.innerHTML = '';
+
+    // Después de 2 segundos, mostrar éxito
+    setTimeout(() => {
+        carga.classList.remove('activo');
+        exito.classList.add('activo');
+        lanzarConfeti();
+    }, 1800);
+}
+
+// Botón para ir a la boleta
+document.getElementById('btn-ir-boleta')?.addEventListener('click', () => {
+    document.getElementById('modal-confirmacion').classList.remove('activo');
+    // Generar boleta y mostrar paso de confirmación
+    generarBoleta();
+    showStep(4);
+    // Vaciar el carrito después de completar la compra
+    guardarCarrito([]);
+});
+
+// Confeti animado
+function lanzarConfeti() {
+    const confeti = document.getElementById('confeti');
+    confeti.innerHTML = '';
+    for (let i = 0; i < 40; i++) {
+        const div = document.createElement('div');
+        div.style.position = 'absolute';
+        div.style.left = Math.random() * 100 + '%';
+        div.style.top = Math.random() * 40 + 'px';
+        div.style.width = '8px';
+        div.style.height = '16px';
+        div.style.background = `hsl(${Math.random()*360},80%,60%)`;
+        div.style.opacity = 0.8;
+        div.style.borderRadius = '3px';
+        div.style.transform = `rotate(${Math.random()*360}deg)`;
+        div.style.animation = `confeti-fall 1.2s ${Math.random()}s ease-out forwards`;
+        confeti.appendChild(div);
+    }
+}
+
+// Animación de caída de confeti
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes confeti-fall {
+    to {
+        transform: translateY(80px) rotate(360deg);
+        opacity: 0;
+    }
+}`;
+document.head.appendChild(style);
+
+// Mostrar/ocultar la nota de delivery en la sección de envío
+function actualizarNotaDelivery() {
+    const deliveryRadio = document.getElementById('delivery');
+    const nota = document.getElementById('nota-delivery');
+    if (deliveryRadio && nota) {
+        nota.style.display = deliveryRadio.checked ? 'block' : 'none';
+    }
+}
+
+// Al cargar la página y al cambiar el método de entrega
+document.addEventListener('DOMContentLoaded', actualizarNotaDelivery);
+document.querySelectorAll('input[name="metodo-entrega"]').forEach(radio => {
+    radio.addEventListener('change', actualizarNotaDelivery);
 });

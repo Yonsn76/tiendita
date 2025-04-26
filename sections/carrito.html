@@ -10,33 +10,83 @@
     <header class="main-header">
         <div class="header-container">
             <h1>LUXE STYLE</h1>
-            <button id="ver-carrito-link" class="btn btn-primary">Ver Carrito</button>
         </div>
     </header>
 
     <div class="container">
         <div class="pasos-indicador">
-            <span class="paso activo">1. Carrito</span>
-            <span>></span>
-            <span class="paso">2. Envío</span>
-            <span>></span>
-            <span class="paso">3. Pago</span>
-            <span>></span>
-            <span class="paso">4. Confirmación</span>
+            <div class="paso-indicador" data-paso="1">
+                <div class="paso-circulo">1</div>
+                <span class="paso-label">Carrito</span>
+            </div>
+            <div class="paso-linea"></div>
+            <div class="paso-indicador" data-paso="2">
+                <div class="paso-circulo">2</div>
+                <span class="paso-label">Envío</span>
+            </div>
+            <div class="paso-linea"></div>
+            <div class="paso-indicador" data-paso="3">
+                <div class="paso-circulo">3</div>
+                <span class="paso-label">Pago</span>
+            </div>
+            <div class="paso-linea"></div>
+            <div class="paso-indicador" data-paso="4">
+                <div class="paso-circulo">4</div>
+                <span class="paso-label">Confirmación</span>
+            </div>
         </div>
 
         <!-- Paso 1: Carrito -->
         <div id="paso-carrito" class="paso-checkout">
             <h2>Tu Carrito</h2>
-            <div class="carrito-items-container"></div>
-            <div class="carrito-resumen-simple">
-                <span>Total del Carrito:</span>
-                <strong>S/ <span id="total-carrito">0.00</span></strong>
-            </div>
-            <div class="paso-navegacion">
-                <button class="btn btn-secondary" id="seguir-comprando">Seguir Comprando</button>
-                <button class="btn btn-danger" id="vaciar-carrito">Vaciar Carrito</button>
-                <button class="btn btn-primary" id="siguiente-envio">Siguiente</button>
+            
+            <div class="carrito-layout">
+                <!-- Columna izquierda: Productos -->
+                <div class="carrito-productos">
+                    <div class="carrito-items-container"></div>
+                    <div class="carrito-centro-botones">
+                        <button class="btn btn-secondary" id="seguir-comprando">Seguir Comprando</button>
+                    </div>
+                </div>
+                
+                <!-- Columna derecha: Resumen y botones -->
+                <div class="carrito-resumen">
+                    <div class="plan" aria-label="Resumen del pedido">
+                        <div class="inner">
+                            <p class="title">Resumen del pedido</p>
+                            <p class="info">Revisa los detalles antes de continuar con tu compra.</p>
+                            <ul class="features">
+                                <li>
+                                    <span class="icon">
+                                        <svg height="24" width="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path></svg>
+                                    </span>
+                                    <span>Subtotal: <strong>S/ <span id="subtotal-carrito">0.00</span></strong></span>
+                                </li>
+                                <li>
+                                    <span class="icon">
+                                        <svg height="24" width="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path></svg>
+                                    </span>
+                                    <span>IGV (18%): <strong>S/ <span id="igv-carrito">0.00</span></strong></span>
+                                </li>
+                                <li>
+                                    <span class="icon">
+                                        <svg height="24" width="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"></path></svg>
+                                    </span>
+                                    <span><strong>Total: S/ <span id="total-carrito">0.00</span></strong></span>
+                                </li>
+                            </ul>
+                            <p id="mensaje-delivery" style="color:#888; font-size:0.95em; margin-top:8px; display:none;">
+                                Entrega en 1 a 7 días hábiles. Si no llega en ese plazo, se le devolverá su dinero.
+                            </p>
+                            <div class="action">
+                                <button class="plan button btn-block btn-primary" id="siguiente-envio">Proceder al pago</button>
+                            </div>
+                            <div class="action" style="margin-top:10px;">
+                                <button class="plan button btn-block btn-danger" id="vaciar-carrito">Vaciar Carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -47,49 +97,166 @@
             <!-- Información de Contacto -->
             <div class="seccion-contacto">
                 <h3>Información de Contacto</h3>
-                <div class="form-group">
-                    <label for="nombre-cliente">Nombre Completo</label>
-                    <input type="text" id="nombre-cliente" required placeholder="Ingrese su nombre completo">
+                <div class="input-container">
+                    <input class="input" name="nombre-cliente" id="nombre-cliente" type="text" required placeholder="Ejemplo: Juan Pérez">
+                    <label class="label" for="nombre-cliente">Nombre Completo</label>
+                    <div class="topline"></div>
+                    <div class="underline"></div>
+                    <small class="ayuda-input">Ingresa tu nombre y apellido tal como figura en tu documento.</small>
                 </div>
-                <div class="form-group">
-                    <label for="dni-cliente">DNI</label>
-                    <input type="text" id="dni-cliente" required placeholder="12345678" maxlength="8">
+                <div class="input-container">
+                    <input class="input" name="dni-cliente" id="dni-cliente" type="text" required maxlength="8" placeholder="Ejemplo: 12345678">
+                    <label class="label" for="dni-cliente">DNI</label>
+                    <div class="topline"></div>
+                    <div class="underline"></div>
+                    <small class="ayuda-input">Debe tener 8 dígitos, solo números.</small>
                 </div>
-                <div class="form-group">
-                    <label for="email">Correo Electrónico</label>
-                    <input type="email" id="email" required placeholder="ejemplo@correo.com">
+                <div class="input-container">
+                    <input class="input" name="email" id="email" type="email" required placeholder="Ejemplo: correo@dominio.com">
+                    <label class="label" for="email">Correo Electrónico</label>
+                    <div class="topline"></div>
+                    <div class="underline"></div>
+                    <small class="ayuda-input">Te enviaremos la confirmación de tu pedido a este correo.</small>
                 </div>
-                <div class="form-group">
-                    <label for="telefono">Número de Teléfono</label>
-                    <input type="tel" id="telefono" required placeholder="999999999">
+                <div class="input-container">
+                    <input class="input" name="telefono" id="telefono" type="tel" required placeholder="Ejemplo: 999999999">
+                    <label class="label" for="telefono">Número de Teléfono</label>
+                    <div class="topline"></div>
+                    <div class="underline"></div>
+                    <small class="ayuda-input">Solo números, 9 dígitos.</small>
                 </div>
             </div>
 
             <div class="metodo-entrega-container">
-                <div class="opcion-entrega">
+                <!-- Opción Delivery -->
+                <label class="opcion-entrega-card">
                     <input type="radio" name="metodo-entrega" id="delivery" value="delivery" checked>
-                    <label for="delivery">Delivery a Domicilio</label>
-                </div>
-                <div class="opcion-entrega">
+                    <div class="opcion-card-contenido">
+                        <div class="opcion-card-titulo">Delivery a Domicilio</div>
+                        <div class="opcion-card-descripcion">
+                            Recibe tu pedido en la puerta de tu casa. Costo adicional S/ 5.00.
+                        </div>
+                        <div class="opcion-card-footer">
+                            <svg class="opcion-card-icono" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none">
+                                <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+                                    stroke-linejoin="round" stroke-linecap="round"></path>
+                            </svg>
+                            <span class="opcion-card-label">Seleccionar</span>
+                        </div>
+                    </div>
+                </label>
+                <!-- Opción Recojo en Tienda -->
+                <label class="opcion-entrega-card">
                     <input type="radio" name="metodo-entrega" id="recojo" value="recojo">
-                    <label for="recojo">Recojo en Tienda</label>
-                </div>
+                    <div class="opcion-card-contenido">
+                        <div class="opcion-card-titulo">Recojo en Tienda</div>
+                        <div class="opcion-card-descripcion">
+                            Retira tu pedido en cualquiera de nuestras tiendas sin costo adicional.
+                        </div>
+                        <div class="opcion-card-footer">
+                            <svg class="opcion-card-icono" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" fill="none">
+                                <path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+                                    stroke-linejoin="round" stroke-linecap="round"></path>
+                            </svg>
+                            <span class="opcion-card-label">Seleccionar</span>
+                        </div>
+                    </div>
+                </label>
             </div>
 
             <!-- Formulario para Delivery -->
             <div id="formulario-delivery" class="formulario-entrega">
-                <div class="form-group">
-                    <label for="direccion">Dirección</label>
-                    <input type="text" id="direccion" required>
+                <h4>Mis direcciones</h4>
+                
+                <div class="direcciones-container" style="display: flex; gap: 24px; align-items: flex-start;">
+                    <!-- Columna izquierda: direcciones -->
+                    <div style="flex: 1;">
+                        <div class="direcciones-grid" id="direcciones-grid">
+                            <!-- Aquí se cargarán dinámicamente las tarjetas de direcciones -->
+                        </div>
+                        <!-- Tarjeta para agregar nueva dirección -->
+                        <div class="address-card-container" id="nueva-direccion-card">
+                            <div class="canvas">
+                                <div class="tracker"></div>
+                                <div id="card" class="add-card">
+                                    <div class="card-content">
+                                        <div class="card-glare"></div>
+                                        <div class="cyber-lines">
+                                            <span></span><span></span><span></span><span></span>
+                                        </div>
+                                        <p id="prompt"><i class="fas fa-plus"></i> AGREGAR DIRECCIÓN</p>
+                                        <div class="corner-elements">
+                                            <span></span><span></span><span></span><span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Columna derecha: tarjeta de nota delivery -->
+                    <div style="flex: 0 0 340px; max-width: 340px;">
+                        <div class="anuncio-delivery" id="card-nota-delivery">
+                            <div class="anuncio-icono">
+                                <span>🚚</span>
+                            </div>
+                            <div class="anuncio-textos">
+                                <div class="anuncio-titulo">¡Atención!</div>
+                                <div class="anuncio-mensaje">
+                                    El <b>delivery</b> tiene un <b>costo adicional de S/ 5.00</b>.<br>
+                                    Entrega en <b>1 a 7 días hábiles</b>.<br>
+                                    Si no llega en ese plazo, se le devolverá su dinero.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-row">
+                
+                <!-- Formulario oculto para agregar dirección nueva -->
+                <div id="nueva-direccion-form" class="hidden">
+                    <h4>Agregar nueva dirección</h4>
                     <div class="form-group">
-                        <label for="ciudad">Ciudad</label>
-                        <input type="text" id="ciudad" required>
+                        <label for="etiqueta-direccion">Nombre de la dirección</label>
+                        <input type="text" id="etiqueta-direccion" placeholder="Casa, Trabajo, etc.">
                     </div>
                     <div class="form-group">
-                        <label for="codigo-postal">Código Postal</label>
-                        <input type="text" id="codigo-postal" required>
+                        <label for="direccion-nueva">Dirección</label>
+                        <input type="text" id="direccion-nueva" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ciudad-nueva">Ciudad</label>
+                            <input type="text" id="ciudad-nueva" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="codigo-postal-nuevo">Código Postal</label>
+                            <input type="text" id="codigo-postal-nuevo" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="referencias">Referencias (opcional)</label>
+                        <textarea id="referencias" placeholder="Indicaciones adicionales..."></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" id="cancelar-direccion">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="guardar-direccion">Guardar</button>
+                    </div>
+                </div>
+                
+                <!-- Formulario para la dirección seleccionada -->
+                <div id="direccion-seleccionada-form">
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ciudad">Ciudad</label>
+                            <input type="text" id="ciudad" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="codigo-postal">Código Postal</label>
+                            <input type="text" id="codigo-postal" required>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,69 +283,81 @@
         <!-- Paso 3: Pago -->
         <div id="paso-pago" class="paso-checkout hidden">
             <h2>Información de Pago</h2>
-            <div class="metodos-pago-container">
-                <div class="opcion-pago">
-                    <input type="radio" name="metodo-pago" id="tarjeta" value="tarjeta" checked>
-                    <label for="tarjeta">Tarjeta de Crédito/Débito</label>
-                </div>
-                <div class="opcion-pago">
-                    <input type="radio" name="metodo-pago" id="yape" value="yape">
-                    <label for="yape">Yape</label>
-                </div>
-                <div class="opcion-pago">
-                    <input type="radio" name="metodo-pago" id="paypal" value="paypal">
-                    <label for="paypal">PayPal</label>
-                </div>
-            </div>
-
-            <!-- Formulario de Tarjeta -->
-            <div id="formulario-tarjeta" class="formulario-pago">
-                <div class="form-group">
-                    <label for="numero-tarjeta">Número de Tarjeta</label>
-                    <input type="text" id="numero-tarjeta" maxlength="19" placeholder="1234 5678 9012 3456">
-                    <div id="tipo-tarjeta"></div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fecha-vencimiento">Fecha de Vencimiento</label>
-                        <input type="text" id="fecha-vencimiento" placeholder="MM/AA" maxlength="5">
+            
+            <div class="metodo-pago-moderno">
+                <form class="form-pago">
+                    <!-- Radios ocultos para método de pago -->
+                    <input type="radio" name="metodo-pago" value="tarjeta" id="radio-tarjeta" checked style="display:none;">
+                    <input type="radio" name="metodo-pago" value="yape" id="radio-yape" style="display:none;">
+                    <input type="radio" name="metodo-pago" value="paypal" id="radio-paypal" style="display:none;">
+                    <div class="payment-options">
+                        <button type="button" id="btn-tarjeta" class="payment-option active">
+                            <img id="logo-tarjeta" src="https://cdn-icons-png.flaticon.com/512/633/633611.png" alt="Tarjeta de Crédito" style="height:32px;">
+                        </button>
+                        <button type="button" id="btn-yape" class="payment-option">
+                            <img src="https://seeklogo.com/images/Y/yape-logo-0F8B0C0C5A-seeklogo.com.png" alt="Yape" style="height:32px;">
+                        </button>
+                        <button type="button" id="btn-paypal" class="payment-option">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="height:32px;">
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label for="cvv">CVV</label>
-                        <input type="text" id="cvv" maxlength="4" placeholder="123">
+                    
+                    <div class="separator">
+                        <hr class="line">
+                        <p id="separator-text">pagar con tarjeta de crédito</p>
+                        <hr class="line">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="nombre-tarjeta">Nombre en la Tarjeta</label>
-                    <input type="text" id="nombre-tarjeta" placeholder="Como aparece en la tarjeta">
-                </div>
-            </div>
-
-            <!-- Formulario de Yape -->
-            <div id="formulario-yape" class="formulario-pago hidden">
-                <div class="yape-info">
-                    <p>Escanea el código QR con tu app de Yape</p>
-                    <div class="form-group">
-                        <label for="telefono-yape">Número de teléfono Yape</label>
-                        <input type="tel" id="telefono-yape" placeholder="999999999">
+                    
+                    <!-- Contenedor de tarjeta de crédito -->
+                    <div id="tarjeta-container" class="credit-card-info">
+                        <div class="input-container">
+                            <label for="nombre-tarjeta" class="input-label">Nombre completo del titular</label>
+                            <input id="nombre-tarjeta" class="input-field" type="text" placeholder="Ingrese el nombre como aparece en la tarjeta">
+                        </div>
+                        <div class="input-container" style="position:relative;">
+                            <label for="numero-tarjeta" class="input-label">Número de Tarjeta</label>
+                            <input id="numero-tarjeta" class="input-field" type="text" placeholder="1234 5678 9012 3456" autocomplete="cc-number">
+                            <img id="logo-tipo-tarjeta" src="" alt="" style="height:28px;position:absolute;right:10px;top:35px;display:none;">
+                            <div id="tipo-tarjeta" class="mt-2"></div>
+                        </div>
+                        <div class="input-container">
+                            <label class="input-label">Fecha de Vencimiento / CVV</label>
+                            <div class="split">
+                                <input id="fecha-vencimiento" class="input-field" type="text" placeholder="MM/AA" maxlength="5">
+                                <input id="cvv" class="input-field" type="number" placeholder="CVV" maxlength="4">
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    
+                    <!-- Contenedor de Yape -->
+                    <div id="yape-container">
+                        <div class="yape-info">
+                            <p>Escanea el código QR con tu aplicación de Yape</p>
+                            <img src="../img/qr-yape.png" alt="Código QR de Yape" class="qr-code">
+                        </div>
+                        <div class="input-container">
+                            <label for="telefono-yape" class="input-label">Número de teléfono Yape</label>
+                            <input id="telefono-yape" class="input-field" type="tel" placeholder="999999999">
+                        </div>
+                    </div>
+                    
+                    <!-- Contenedor de PayPal -->
+                    <div id="paypal-container">
+                        <div class="paypal-info">
+                            <p>Serás redirigido a PayPal para completar el pago de forma segura</p>
+                        </div>
+                        <div class="input-container">
+                            <label for="email-paypal" class="input-label">Email de PayPal (opcional)</label>
+                            <input id="email-paypal" class="input-field" type="email" placeholder="tu@email.com">
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="confirmar-pedido" class="checkout-btn">Confirmar Pedido</button>
+                </form>
             </div>
             
-            <!-- Formulario de PayPal -->
-            <div id="formulario-paypal" class="formulario-pago hidden">
-                <div class="paypal-info">
-                    <p>Serás redirigido a PayPal para completar el pago</p>
-                    <div class="form-group">
-                        <label for="email-paypal">Email de PayPal (opcional)</label>
-                        <input type="email" id="email-paypal" placeholder="tu@email.com">
-                    </div>
-                </div>
-            </div>
-
             <div class="paso-navegacion">
                 <button class="btn btn-secondary" id="volver-envio">Anterior</button>
-                <button class="btn btn-success" id="confirmar-pedido">Confirmar Pedido</button>
             </div>
         </div>
 
@@ -248,6 +427,10 @@
                     <p id="detalle-pago">-</p>
                 </div>
                 
+                <div style="margin-top: 1.5rem; text-align: right;">
+                    <span style="display:inline-block; border-top:1px solid #bbb; width:160px; margin-top:20px; color:#888; font-size:0.95rem;">Firma y sello</span>
+                </div>
+                
                 <div class="boleta-footer">
                     <p>¡Gracias por tu compra!</p>
                     <small>Recibirás un correo electrónico con los detalles de tu pedido.</small>
@@ -261,6 +444,94 @@
         </div>
     </div>
 
+    <!-- Justo después de la etiqueta body o antes del cierre de body -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Formulario oculto para agregar dirección nueva -->
+    <div id="nueva-direccion-form">
+        <h4>Agregar nueva dirección</h4>
+        <div class="form-group">
+            <label for="etiqueta-direccion">Nombre de la dirección</label>
+            <input type="text" id="etiqueta-direccion" placeholder="Casa, Trabajo, etc.">
+        </div>
+        <div class="form-group">
+            <label for="direccion-nueva">Dirección</label>
+            <input type="text" id="direccion-nueva" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="ciudad-nueva">Ciudad</label>
+                <input type="text" id="ciudad-nueva" required>
+            </div>
+            <div class="form-group">
+                <label for="codigo-postal-nuevo">Código Postal</label>
+                <input type="text" id="codigo-postal-nuevo" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="referencias">Referencias (opcional)</label>
+            <textarea id="referencias" placeholder="Indicaciones adicionales..."></textarea>
+        </div>
+        <div class="form-buttons">
+            <button type="button" class="btn btn-secondary" id="cancelar-direccion">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="guardar-direccion">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de pedido -->
+    <div id="modal-confirmacion" class="modal-confirmacion">
+        <div class="modal-contenido" id="modal-contenido-carga">
+            <div class="loader">
+                <div class="truckWrapper">
+                    <div class="truckBody">
+                        <!-- SVG del camión -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 198 93" class="trucksvg">
+                            <path stroke-width="3" stroke="#282828" fill="#F83D3D" d="M135 22.5H177.264C178.295 22.5 179.22 23.133 179.594 24.0939L192.33 56.8443C192.442 57.1332 192.5 57.4404 192.5 57.7504V89C192.5 90.3807 191.381 91.5 190 91.5H135C133.619 91.5 132.5 90.3807 132.5 89V25C132.5 23.6193 133.619 22.5 135 22.5Z"></path>
+                            <path stroke-width="3" stroke="#282828" fill="#7D7C7C" d="M146 33.5H181.741C182.779 33.5 183.709 34.1415 184.078 35.112L190.538 52.112C191.16 53.748 189.951 55.5 188.201 55.5H146C144.619 55.5 143.5 54.3807 143.5 53V36C143.5 34.6193 144.619 33.5 146 33.5Z"></path>
+                            <path stroke-width="2" stroke="#282828" fill="#282828" d="M150 65C150 65.39 149.763 65.8656 149.127 66.2893C148.499 66.7083 147.573 67 146.5 67C145.427 67 144.501 66.7083 143.873 66.2893C143.237 65.8656 143 65.39 143 65C143 64.61 143.237 64.1344 143.873 63.7107C144.501 63.2917 145.427 63 146.5 63C147.573 63 148.499 63.2917 149.127 63.7107C149.763 64.1344 150 64.61 150 65Z"></path>
+                            <rect stroke-width="2" stroke="#282828" fill="#FFFCAB" rx="1" height="7" width="5" y="63" x="187"></rect>
+                            <rect stroke-width="2" stroke="#282828" fill="#282828" rx="1" height="11" width="4" y="81" x="193"></rect>
+                            <rect stroke-width="3" stroke="#282828" fill="#DFDFDF" rx="2.5" height="90" width="121" y="1.5" x="6.5"></rect>
+                            <rect stroke-width="2" stroke="#282828" fill="#DFDFDF" rx="2" height="4" width="6" y="84" x="1"></rect>
+                        </svg>
+                    </div>
+                    <div class="truckTires">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg">
+                            <circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle>
+                            <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 30 30" class="tiresvg">
+                            <circle stroke-width="3" stroke="#282828" fill="#282828" r="13.5" cy="15" cx="15"></circle>
+                            <circle fill="#DFDFDF" r="7" cy="15" cx="15"></circle>
+                        </svg>
+                    </div>
+                    <div class="road"></div>
+                    <svg xml:space="preserve" viewBox="0 0 453.459 453.459" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="Capa_1" version="1.1" fill="#000000" class="lampPost">
+                        <path d="M252.882,0c-37.781,0-68.686,29.953-70.245,67.358h-6.917v8.954c-26.109,2.163-45.463,10.011-45.463,19.366h9.993
+      c-1.65,5.146-2.507,10.54-2.507,16.017c0,28.956,23.558,52.514,52.514,52.514c28.956,0,52.514-23.558,52.514-52.514
+      c0-5.478-0.856-10.872-2.506-16.017h9.992c0-9.354-19.352-17.204-45.463-19.366v-8.954h-6.149C200.189,38.779,223.924,16,252.882,16
+      c29.952,0,54.32,24.368,54.32,54.32c0,28.774-11.078,37.009-25.105,47.437c-17.444,12.968-37.216,27.667-37.216,78.884v113.914
+      h-0.797c-5.068,0-9.174,4.108-9.174,9.177c0,2.844,1.293,5.383,3.321,7.066c-3.432,27.933-26.851,95.744-8.226,115.459v11.202h45.75
+      v-11.202c18.625-19.715-4.794-87.527-8.227-115.459c2.029-1.683,3.322-4.223,3.322-7.066c0-5.068-4.107-9.177-9.176-9.177h-0.795
+      V196.641c0-43.174,14.942-54.283,30.762-66.043c14.793-10.997,31.559-23.461,31.559-60.277C323.202,31.545,291.656,0,252.882,0z
+      M232.77,111.694c0,23.442-19.071,42.514-42.514,42.514c-23.442,0-42.514-19.072-42.514-42.514c0-5.531,1.078-10.957,3.141-16.017
+      h78.747C231.693,100.736,232.77,106.162,232.77,111.694z"></path>
+                    </svg>
+                </div>
+            </div>
+            <p class="mensaje-carga" style="margin-top: 30px;">Confirmando pedido...</p>
+        </div>
+        <div class="modal-contenido" id="modal-contenido-exito">
+            <div class="check-animado">
+                <svg viewBox="0 0 52 52"><circle class="circle" cx="26" cy="26" r="25" fill="none"/><path class="check" fill="none" d="M14 27l7 7 16-16"/></svg>
+            </div>
+            <div id="confeti"></div>
+            <p class="mensaje-exito">¡Pedido confirmado!</p>
+            <button id="btn-ir-boleta" class="btn btn-success">Aceptar</button>
+        </div>
+    </div>
+
     <script src="../js/carrito.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
