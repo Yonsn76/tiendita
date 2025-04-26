@@ -185,6 +185,7 @@ function renderProductos(productosAMostrar) {
         });
     });
 }
+
 // Nueva función para mostrar sugerencias de búsqueda
 function mostrarSugerencias(termino) {
     const sugerenciasContainer = document.getElementById('sugerenciasBusqueda');
@@ -220,6 +221,7 @@ function mostrarSugerencias(termino) {
 
     sugerenciasContainer.style.display = sugerencias.length ? 'block' : 'none';
 }
+
 // Función para manejar la selección de una sugerencia
 function seleccionarSugerencia(idProducto) {
     const producto = productos.find(p => p.id === idProducto);
@@ -238,11 +240,6 @@ function seleccionarSugerencia(idProducto) {
         }, 300);
     }
 }
-
-
-
-
-
 
 // Función para buscar productos
 function buscarProductos() {
@@ -318,3 +315,134 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     renderProductos(productos);
 });
+
+// Funcionalidad del carrito
+// Obtener carrito del localStorage o inicializar vacío
+function obtenerCarrito() {
+    return JSON.parse(localStorage.getItem('carrito')) || [];
+}
+
+// Guardar carrito en localStorage
+function guardarCarrito(carrito) {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarContadorCarrito();
+}
+
+// Actualizar contador de items en el carrito
+function actualizarContadorCarrito() {
+    const carrito = obtenerCarrito();
+    const contador = carrito.reduce((total, item) => total + item.cantidad, 0);
+    const cartCountElement = document.getElementById('cartCount');
+    if (cartCountElement) {
+        cartCountElement.textContent = contador;
+    }
+}
+
+// Agregar producto al carrito
+function agregarAlCarrito(productoId, talla = null) {
+    const carrito = obtenerCarrito();
+    const producto = productos.find(p => p.id === productoId);
+    
+    if (!producto) {
+        console.error('Producto no encontrado:', productoId);
+        return;
+    }
+    
+    const itemExistente = carrito.find(item => 
+        item.id === productoId && 
+        (talla === null || item.talla === talla)
+    );
+    
+    if (itemExistente) {
+        itemExistente.cantidad++;
+    } else {
+        carrito.push({
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            imagen: producto.imagen,
+            talla: talla,
+            cantidad: 1
+        });
+    }
+    
+    guardarCarrito(carrito);
+    
+    actualizarContadorCarrito();
+    
+    mostrarNotificacion(`${producto.nombre} añadido al carrito`);
+}
+
+// Mostrar notificación al añadir producto
+function mostrarNotificacion(mensaje) {
+    const notificacion = document.createElement('div');
+    notificacion.className = 'notification';
+    notificacion.textContent = mensaje;
+    
+    document.body.appendChild(notificacion);
+    
+    // Mostrar animación
+    setTimeout(() => {
+        notificacion.classList.add('show');
+    }, 10);
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        notificacion.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notificacion);
+        }, 300);
+    }, 3000);
+}
+
+// En js/catalogo.js necesitamos agregar el handler para los botones de "Añadir al carrito"
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar contador del carrito al cargar la página
+    actualizarContadorCarrito();
+    
+    // Agregar delegación de eventos para los botones de "Añadir al carrito"
+    document.getElementById('productGrid').addEventListener('click', function(e) {
+        // Buscar si el clic fue en un botón de añadir al carrito
+        const addToCartBtn = e.target.closest('.add-to-cart');
+        if (addToCartBtn) {
+            const productCard = addToCartBtn.closest('.product-card');
+            if (productCard) {
+                const productId = parseInt(productCard.getAttribute('data-product-id'));
+                // Encontrar la talla seleccionada (si hay)
+                const selectedSize = productCard.querySelector('.size-option.selected');
+                const talla = selectedSize ? selectedSize.textContent : null;
+                
+                // Si no hay talla seleccionada y hay opciones de talla, mostrar alerta
+                const hasSizeOptions = productCard.querySelectorAll('.size-option').length > 0;
+                if (hasSizeOptions && !talla) {
+                    alert('Por favor selecciona una talla');
+                    return;
+                }
+                
+                agregarAlCarrito(productId, talla);
+            }
+        }
+    });
+});
+
+// Función para calcular totales
+function calcularTotales() {
+    let subtotal = 0;
+    const carrito = obtenerCarrito();
+    
+    carrito.forEach(producto => {
+        subtotal += producto.precio * producto.cantidad;
+    });
+    
+    // Costo de envío fijo (se podría hacer variable según distancia, peso, etc.)
+    const costoEnvio = subtotal > 0 ? 5.99 : 0;
+    
+    // Calcular total
+    const total = subtotal + costoEnvio;
+    
+    return {
+        subtotal: subtotal.toFixed(2),
+        costoEnvio: costoEnvio.toFixed(2),
+        total: total.toFixed(2)
+    };
+}
