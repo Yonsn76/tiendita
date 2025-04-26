@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proceso de Compra</title>
+    <link rel="stylesheet" href="../css/carrito.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <h1>Mi Tienda</h1>
+            <button id="ver-carrito-link" class="btn btn-primary">Ver Carrito</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="pasos-indicador">
+            <span class="paso activo">1. Carrito</span>
+            <span>></span>
+            <span class="paso">2. Envío</span>
+            <span>></span>
+            <span class="paso">3. Pago</span>
+            <span>></span>
+            <span class="paso">4. Confirmación</span>
+        </div>
+
+        <!-- Paso 1: Carrito -->
+        <div id="paso-carrito" class="paso-checkout">
+            <h2>Tu Carrito</h2>
+            <div class="carrito-items-container"></div>
+            <div class="carrito-resumen-simple">
+                <span>Total del Carrito:</span>
+                <strong>$<span id="total-carrito">0.00</span></strong>
+            </div>
+            <div class="paso-navegacion">
+                <button class="btn btn-danger" id="vaciar-carrito">Vaciar Carrito</button>
+                <button class="btn btn-primary" id="siguiente-envio">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- Paso 2: Envío -->
+        <div id="paso-envio" class="paso-checkout hidden">
+            <h2>Información de Contacto y Entrega</h2>
+            
+            <!-- Información de Contacto -->
+            <div class="seccion-contacto">
+                <h3>Información de Contacto</h3>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="ejemplo@correo.com">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Número de Teléfono</label>
+                    <input type="tel" id="telefono" required placeholder="999999999">
+                </div>
+            </div>
+
+            <div class="metodo-entrega-container">
+                <div class="opcion-entrega">
+                    <input type="radio" name="metodo-entrega" id="delivery" value="delivery" checked>
+                    <label for="delivery">Delivery a Domicilio</label>
+                </div>
+                <div class="opcion-entrega">
+                    <input type="radio" name="metodo-entrega" id="recojo" value="recojo">
+                    <label for="recojo">Recojo en Tienda</label>
+                </div>
+            </div>
+
+            <!-- Formulario para Delivery -->
+            <div id="formulario-delivery" class="formulario-entrega">
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ciudad">Ciudad</label>
+                        <input type="text" id="ciudad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigo-postal">Código Postal</label>
+                        <input type="text" id="codigo-postal" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario para Recojo en Tienda -->
+            <div id="formulario-recojo" class="formulario-entrega hidden">
+                <div class="form-group">
+                    <label for="tienda">Selecciona la Tienda</label>
+                    <select id="tienda" required>
+                        <option value="">Selecciona una tienda</option>
+                        <option value="tienda1">Tienda Central</option>
+                        <option value="tienda2">Tienda Norte</option>
+                        <option value="tienda3">Tienda Sur</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="paso-navegacion">
+                <button class="btn btn-secondary" id="volver-carrito">Anterior</button>
+                <button class="btn btn-primary" id="siguiente-pago">Siguiente</button>
+            </div>
+        </div>
+
+        <!-- Paso 3: Pago -->
+        <div id="paso-pago" class="paso-checkout hidden">
+            <h2>Información de Pago</h2>
+            <div class="metodos-pago-container">
+                <div class="opcion-pago">
+                    <input type="radio" name="metodo-pago" id="tarjeta" value="tarjeta" checked>
+                    <label for="tarjeta">Tarjeta de Crédito/Débito</label>
+                </div>
+                <div class="opcion-pago">
+                    <input type="radio" name="metodo-pago" id="yape" value="yape">
+                    <label for="yape">Yape</label>
+                </div>
+                <div class="opcion-pago">
+                    <input type="radio" name="metodo-pago" id="paypal" value="paypal">
+                    <label for="paypal">PayPal</label>
+                </div>
+            </div>
+
+            <!-- Formulario de Tarjeta -->
+            <div id="formulario-tarjeta" class="formulario-pago">
+                <div class="form-group">
+                    <label for="numero-tarjeta">Número de Tarjeta</label>
+                    <input type="text" id="numero-tarjeta" maxlength="19" placeholder="1234 5678 9012 3456">
+                    <div id="tipo-tarjeta"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha-vencimiento">Fecha de Vencimiento</label>
+                        <input type="text" id="fecha-vencimiento" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" maxlength="4" placeholder="123">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nombre-tarjeta">Nombre en la Tarjeta</label>
+                    <input type="text" id="nombre-tarjeta" placeholder="Como aparece en la tarjeta">
+                </div>
+            </div>
+
+            <!-- Formulario de Yape -->
+            <div id="formulario-yape" class="formulario-pago hidden">
+                <div class="yape-info">
+                    <p>Escanea el código QR con tu app de Yape</p>
+                    <div class="form-group">
+                        <label for="telefono-yape">Número de teléfono Yape</label>
+                        <input type="tel" id="telefono-yape" placeholder="999999999">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de PayPal -->
+            <div id="formulario-paypal" class="formulario-pago hidden">
+                <div class="paypal-info">
+                    <p>Serás redirigido a PayPal para completar el pago</p>
+                    <div class="form-group">
+                        <label for="email-paypal">Email de PayPal (opcional)</label>
+                        <input type="email" id="email-paypal" placeholder="tu@email.com">
+                    </div>
+                </div>
+            </div>
+
+            <div class="paso-navegacion">
+                <button class="btn btn-secondary" id="volver-envio">Anterior</button>
+                <button class="btn btn-success" id="confirmar-pedido">Confirmar Pedido</button>
+            </div>
+        </div>
+
+        <!-- Paso 4: Confirmación -->
+        <div id="paso-confirmacion" class="paso-checkout hidden">
+            <h2>¡Pedido Confirmado!</h2>
+            
+            <div class="confirmacion-boleta">
+                <div class="boleta-header">
+                    <div class="logo-tienda">Mi Tienda</div>
+                    <div class="boleta-info">
+                        <p>Boleta Electrónica</p>
+                        <p>Fecha: <span id="fecha-actual"></span></p>
+                        <p>Nº Pedido: <span id="numero-pedido"></span></p>
+                    </div>
+                </div>
+                
+                <div class="boleta-cliente">
+                    <h3>Datos del Cliente</h3>
+                    <p>Cliente: <span id="cliente-nombre">-</span></p>
+                    <p>Email: <span id="cliente-email">-</span></p>
+                    <p>Teléfono: <span id="cliente-telefono">-</span></p>
+                </div>
+                
+                <div class="boleta-envio">
+                    <h3>Información de Envío</h3>
+                    <p>Método: <span id="metodo-envio">-</span></p>
+                    <p id="direccion-envio">-</p>
+                </div>
+                
+                <div class="boleta-productos">
+                    <h3>Detalle de Productos</h3>
+                    <table class="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumen-productos">
+                            <!-- Aquí se agregarán los productos dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="boleta-totales">
+                    <div class="linea-total">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+                    <div class="linea-total">
+                        <span>Envío:</span>
+                        <span id="costo-envio">$0.00</span>
+                    </div>
+                    <div class="linea-total total-final">
+                        <span>Total:</span>
+                        <span id="total-pedido">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="boleta-pago">
+                    <h3>Información de Pago</h3>
+                    <p>Método: <span id="metodo-pago-resumen">-</span></p>
+                    <p id="detalle-pago">-</p>
+                </div>
+                
+                <div class="boleta-footer">
+                    <p>¡Gracias por tu compra!</p>
+                    <small>Recibirás un correo electrónico con los detalles de tu pedido.</small>
+                </div>
+            </div>
+            
+            <div class="paso-navegacion">
+                <button class="btn btn-primary" id="volver-tienda">Volver a la Tienda</button>
+                <button class="btn btn-success" id="descargar-boleta">Descargar Boleta</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/carrito.js"></script>
+</body>
+</html>
