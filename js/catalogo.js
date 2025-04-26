@@ -371,6 +371,7 @@ function agregarAlCarrito(productoId, talla = null) {
     actualizarContadorCarrito();
     
     mostrarNotificacion(`${producto.nombre} añadido al carrito`);
+    animarCarritoAvanza();
 }
 
 // Mostrar notificación al añadir producto
@@ -446,3 +447,4 @@ function calcularTotales() {
         total: total.toFixed(2)
     };
 }
+

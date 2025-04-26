@@ -11,7 +11,8 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">
-                <span>LUXE</span>STYLE
+                
+                <span hr>LUXE</span>STYLE
             </div>
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Buscar productos...">
@@ -25,9 +26,6 @@
                     <li><a href="#">Ofertas</a></li>
                 </ul>
             </nav>
-            <div class="cart-icon">
-                <a href="carrito.html" id="verCarrito"><i class="fas fa-shopping-cart"></i> <span id="cartCount">0</span></a>
-            </div>
         </div>
     </header>
 
@@ -114,6 +112,23 @@
             <p>&copy; 2025 LUXE STYLE. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <!-- Botón flotante brutalista de carrito -->
+    <div class="button-container carrito-flotante">
+        <a href="carrito.html" class="brutalist-button carrito-button button-1">
+            <div class="carrito-logo">
+                <!-- Ícono de carrito SVG -->
+                <svg class="carrito-icon" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#42c498" d="M528.12 301.319l47.273-208A16 16 0 0 0 560 80H120l-9.4-44.5A16 16 0 0 0 95 32H16A16 16 0 0 0 0 48v16a16 16 0 0 0 16 16h66.1l61.6 291.2A63.94 63.94 0 1 0 256 464h192a63.94 63.94 0 1 0 63.9-63.9c-2.8 0-5.6.2-8.4.5l-12.5-55.7zM256 416a32 32 0 1 1-32-32 32 32 0 0 1 32 32zm192 0a32 32 0 1 1-32-32 32 32 0 0 1 32 32zm-44.8-96H195.2l-7.2-32h266.1z"/>
+                </svg>
+                <span id="cartCount" class="carrito-count">0</span>
+            </div>
+            <div class="button-text">
+                <span>Ver</span>
+                <span>Carrito</span>
+            </div>
+        </a>
+    </div>
 
     <script src="/js/catalogo.js"></script>
 </body>

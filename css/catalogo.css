@@ -590,3 +590,369 @@ body {
         height: 250px;
     }
 }
+
+/* --- Carrito moderno en header --- */
+.cart-icon {
+    position: relative;
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.cart-icon a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0096c7 0%, #48cae4 100%);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    box-shadow: 0 4px 16px rgba(0,150,199,0.10);
+    position: relative;
+    transition: box-shadow 0.2s, transform 0.2s;
+    color: #fff;
+    font-size: 1.5rem;
+    border: 2.5px solid #fff;
+    text-decoration: none;
+}
+
+.cart-icon a:hover {
+    box-shadow: 0 8px 24px rgba(0,150,199,0.18);
+    transform: scale(1.08) rotate(-6deg);
+    background: linear-gradient(135deg, #48cae4 0%, #0096c7 100%);
+}
+
+.cart-icon i.fas.fa-shopping-cart {
+    font-size: 1.5em;
+    color: #fff;
+    transition: color 0.2s;
+}
+
+#cartCount {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.95em;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border: 2px solid #fff;
+    transition: transform 0.2s;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.cart-icon a:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+    .cart-icon {
+        margin-left: 0.5rem;
+    }
+    .cart-icon a {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    #cartCount {
+        width: 18px;
+        height: 18px;
+        font-size: 0.85em;
+    }
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.brutalist-button.carrito-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 142px;
+  height: 142px;
+  color: #e5dede;
+  font-weight: bold;
+  text-decoration: none;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background-color: #063525;
+  border: 3px solid #42c498;
+  border-radius: 12px;
+  box-shadow: 4px 4px 1px #000000;
+}
+
+.brutalist-button.carrito-button:hover {
+  background-color: #1a5c46;
+  border-color: #030504;
+  transform: translate(-6px, -6px) rotate(1deg);
+  box-shadow: 10px 10px 0 #000000, 15px 15px 20px rgba(64, 164, 122, 0.2);
+}
+
+.brutalist-button.carrito-button::before,
+.brutalist-button.carrito-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: 0.6s;
+  pointer-events: none;
+}
+
+.brutalist-button.carrito-button::before {
+  left: -100%;
+}
+.brutalist-button.carrito-button::after {
+  left: 100%;
+}
+
+.brutalist-button.carrito-button:hover::before {
+  animation: swipeRight 1.5s infinite;
+}
+.brutalist-button.carrito-button:hover::after {
+  animation: swipeLeft 1.5s infinite;
+}
+
+@keyframes swipeRight {
+  100% {
+    transform: translateX(200%) skew(-45deg);
+  }
+}
+@keyframes swipeLeft {
+  100% {
+    transform: translateX(-200%) skew(-45deg);
+  }
+}
+
+.carrito-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 3;
+  position: relative;
+}
+
+.carrito-icon {
+  width: 64px;
+  height: 64px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 2px 4px #00000044);
+}
+
+.carrito-count {
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+  top: auto;
+  right: auto;
+  background: #222;
+  color: #fff;
+  font-size: 0.95em;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border: 2px solid #fff;
+  z-index: 2;
+  pointer-events: none;
+  transition: none !important;
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  text-align: center;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 3;
+}
+
+.button-text span:first-child {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.button-text span:last-child {
+  font-size: 16px;
+}
+
+/* Elimina o comenta estas reglas para el ícono del carrito */
+.brutalist-button.carrito-button:hover .carrito-logo {
+  transform: none !important;
+}
+.brutalist-button.carrito-button:hover .carrito-icon {
+  width: 32px !important;
+  height: 32px !important;
+  animation: none !important;
+}
+.brutalist-button.carrito-button:hover .button-text {
+  opacity: 0 !important;
+  max-height: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Elimina la animación de avance */
+.carrito-flotante .carrito-icon.animar-avance {
+  animation: none !important;
+}
+
+/* Elimina la animación de salto del contador */
+.carrito-flotante .carrito-count.salta {
+  animation: none !important;
+}
+
+/* Si quieres, elimina también las transiciones */
+.carrito-flotante .carrito-icon,
+.carrito-flotante .carrito-count {
+  transition: none !important;
+}
+
+.carrito-flotante {
+  position: fixed !important;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  justify-content: flex-end;
+  gap: 0;
+  pointer-events: none;
+}
+
+.carrito-flotante .brutalist-button {
+  pointer-events: auto;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+  border: 3px solid #222;
+  color: #222;
+  box-shadow: 4px 4px 0 #000;
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.carrito-flotante .brutalist-button:hover {
+  background: linear-gradient(135deg, #fb8500 0%, #ffb703 100%);
+  border-color: #fff;
+  color: #fff;
+  box-shadow: 8px 8px 0 #000;
+  transform: translate(-4px, -4px) scale(1.08);
+}
+
+.carrito-flotante .carrito-logo {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.carrito-flotante .carrito-icon {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 1px 2px #00000044);
+}
+
+.carrito-flotante .carrito-count {
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+  top: auto;
+  right: auto;
+  background: #222;
+  color: #fff;
+  font-size: 0.95em;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border: 2px solid #fff;
+  z-index: 2;
+  pointer-events: none;
+  transition: none !important;
+}
+
+.carrito-flotante .button-text {
+  display: none; /* Oculta el texto para versión mini */
+}
+
+@media (max-width: 600px) {
+  .carrito-flotante {
+    right: 10px;
+    bottom: 10px;
+  }
+  .carrito-flotante .brutalist-button {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+  }
+  .carrito-flotante .carrito-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .carrito-flotante .carrito-count {
+    bottom: -4px;
+    left: -4px;
+    top: auto;
+    right: auto;
+    width: 16px;
+    height: 16px;
+    font-size: 0.8em;
+  }
+}
+
+@keyframes carrito-avanza {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(30px) scale(1.1) rotate(8deg);}
+  60% { transform: translateX(30px) scale(1.1) rotate(-8deg);}
+  100% { transform: translateX(0); }
+}
+
+.carrito-flotante .carrito-icon.animar-avance {
+  animation: carrito-avanza 0.7s cubic-bezier(0.4,1.4,0.4,1) 1;
+}
+
+@keyframes contador-salta {
+  0% { transform: scale(1) translateY(0); }
+  30% { transform: scale(1.2) translateY(-10px); }
+  60% { transform: scale(1.1) translateY(-5px);}
+  100% { transform: scale(1) translateY(0); }
+}
+
+.carrito-flotante .carrito-count.salta {
+  animation: none !important;
+}
