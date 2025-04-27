@@ -22,7 +22,7 @@
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="2">
                 <div class="paso-circulo">2</div>
-                <span class="paso-label">Envío</span>
+                <span class="paso-label">Datos</span>
             </div>
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="3">
@@ -32,7 +32,7 @@
             <div class="paso-linea"></div>
             <div class="paso-indicador" data-paso="4">
                 <div class="paso-circulo">4</div>
-                <span class="paso-label">Confirmación</span>
+                <span class="paso-label">Compra realizado</span>
             </div>
         </div>
 
@@ -82,7 +82,7 @@
                                 <button class="plan button btn-block btn-primary" id="siguiente-envio">Proceder al pago</button>
                             </div>
                             <div class="action" style="margin-top:10px;">
-                                <button class="plan button btn-block btn-danger" id="vaciar-carrito">Vaciar Carrito</button>
+                                <button class="plan button btn-danger" id="vaciar-carrito">Vaciar Carrito</button>
                             </div>
                         </div>
                     </div>
@@ -295,10 +295,10 @@
                             <img id="logo-tarjeta" src="https://cdn-icons-png.flaticon.com/512/633/633611.png" alt="Tarjeta de Crédito" style="height:32px;">
                         </button>
                         <button type="button" id="btn-yape" class="payment-option">
-                            <img src="https://seeklogo.com/images/Y/yape-logo-0F8B0C0C5A-seeklogo.com.png" alt="Yape" style="height:32px;">
+                            <span class="text" style="font-size: 1.1em; color: #ff0000;">Pago por QR</span>
                         </button>
                         <button type="button" id="btn-paypal" class="payment-option">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="height:32px;">
+                            <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" style="height:24px; margin-right:10px;">
                         </button>
                     </div>
                     
@@ -329,15 +329,102 @@
                         </div>
                     </div>
                     
-                    <!-- Contenedor de Yape -->
-                    <div id="yape-container">
-                        <div class="yape-info">
-                            <p>Escanea el código QR con tu aplicación de Yape</p>
-                            <img src="../img/qr-yape.png" alt="Código QR de Yape" class="qr-code">
+                    <!-- Paso 1: Ingreso de correo -->
+                    <div id="yape-contenedor" style="display: flex; justify-content: center; gap: 32px; align-items: flex-start;">
+                        <!-- Columna izquierda: pasos de Yape -->
+                        <div style="flex: 1; min-width: 340px;">
+                            <!-- Paso 1 -->
+                            <div id="yape-paso-1" style="max-width: 420px; margin: 0 auto;">
+                                <label for="yape-email" style="font-size: 1.1em;">
+                                    Ingresa tu <b>correo electrónico</b> y genera tu código QR
+                                </label>
+                                <div style="position: relative; margin-bottom: 8px;">
+                                    <input type="email" id="yape-email" placeholder="Correo electrónico" style="width: 100%; padding: 10px; font-size: 1em; margin-top: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                                    <div id="yape-email-error" style="display: none; position: absolute; left: 0; top: 48px; background: #fff0f0; color: #c00; border: 1px solid #f99; border-radius: 6px; padding: 4px 10px; font-size: 0.98em; z-index: 2;">
+                                        Ingrese un correo válido.
+                                        <span style="position: absolute; left: 20px; top: -10px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 10px solid #f99;"></span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 2em; font-weight: bold; margin: 18px 0 8px 0;">
+                                    S/ <span id="yape-monto-paso1"></span>
+                                </div>
+                                <div id="yape-expira-paso1" style="font-size: 1em; color: #222; margin-bottom: 18px;"></div>
+                                <div style="margin: 10px 0;">
+                                    <input type="checkbox" id="yape-terminos" style="vertical-align: middle;">
+                                    <label for="yape-terminos" style="font-size: 0.98em;">
+                                        Acepto <a href="#" style="color:#c00;">Términos y Condiciones</a> y <a href="#" style="color:#c00;">Políticas de Privacidad</a>.
+                                    </label>
+                                </div>
+                                <button id="yape-generar-qr" type="button" class="btn-principal" style="width: 100%; font-size: 1.1em; padding: 12px 0; border-radius: 8px; background: #8ca6c7; color: #fff; border: none; margin-top: 10px; opacity: 0.7; cursor: not-allowed;" disabled>
+                                    <span style="display: inline-flex; align-items: center;">
+                                        <svg style="margin-right: 8px;" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2h2v2H2V2zm3 0h2v2H5V2zm3 0h2v2H8V2zm3 0h2v2h-2V2zM2 5h2v2H2V5zm3 0h2v2H5V5zm3 0h2v2H8V5zm3 0h2v2h-2V5zM2 8h2v2H2V8zm3 0h2v2H5V8zm3 0h2v2H8V8zm3 0h2v2h-2V8zM2 11h2v2H2v-2zm3 0h2v2H5v-2zm3 0h2v2H8v-2zm3 0h2v2h-2v-2z"/></svg>
+                                        Generar código QR
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- Paso 2 -->
+                            <div id="yape-paso-2" style="display: none;">
+                                <div style="background: #fff; padding: 24px 32px; border-radius: 8px; box-shadow: 0 2px 8px #0001; min-width: 340px; text-align: center; margin: 0 auto;">
+                                    <div style="font-size: 1.15em; margin-bottom: 10px;">
+                                        Escanea el QR y <b>págalo desde<br>tu billetera favorita</b>
+                                    </div>
+                                    <img id="yape-qr-img" src="/img/yape-qr.png" alt="QR Yape" style="width: 200px; height: 200px; margin: 10px 0; border: 2px solid #222; background: #fff;">
+                                    <div style="font-size: 2em; font-weight: bold; margin: 18px 0 8px 0;">
+                                        S/ <span id="yape-monto-paso2"></span>
+                                    </div>
+                                    <div id="yape-expira-paso2" style="font-size: 1em; color: #222; margin-bottom: 18px;"></div>
+                                    <div style="margin: 10px 0; color: #888; font-size: 1em;">
+                                        <span id="yape-email-mostrado"></span>
+                                    </div>
+                                    <div style="margin: 16px 0 0 0; text-align: left;">
+                                        <input type="checkbox" id="yape-terminos-2" checked disabled style="vertical-align: middle;">
+                                        <label for="yape-terminos-2" style="font-size: 0.98em;">
+                                            Acepto <a href="#" style="color:#c00;">Términos y Condiciones</a> y <a href="#" style="color:#c00;">Políticas de Privacidad</a>.
+                                        </label>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 30px; text-align: center;">
+                                    <b id="yape-estado-pago">Esperando confirmación de pago...</b>
+                                    <div id="yape-loader" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90px;">
+                                        <div class="spinner" style="margin-bottom: 10px;"></div>
+                                        <div style="font-size: 1.1em; color: #425275; text-align: center;">Confirmando pago...</div>
+                                    </div>
+                                    <div id="yape-exito" style="display:none; margin-top: 18px;">
+                                        <span style="color: #28a745; font-size: 1.3em; font-weight: bold;">
+                                            <svg width="28" height="28" fill="#28a745" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 6px;">
+                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM7 11.414l5.707-5.707-1.414-1.414L7 8.586 4.707 6.293 3.293 7.707 7 11.414z"/>
+                                            </svg>
+                                            ¡Pago exitoso!
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="input-container">
-                            <label for="telefono-yape" class="input-label">Número de teléfono Yape</label>
-                            <input id="telefono-yape" class="input-field" type="tel" placeholder="999999999">
+                        <!-- Columna derecha: información estática -->
+                        <div style="background: #f7f7f7; padding: 24px 32px; border-radius: 8px; min-width: 340px; max-width: 400px;">
+                            <div style="font-size: 1.2em; font-weight: bold; margin-bottom: 8px;">Pago por Billeteras Digitales</div>
+                            <div style="color: #888; font-size: 1em; margin-bottom: 8px;">
+                                Yape, Plin, BBVA Wallet, Scotiabank, Interbank, Ligo, BanBif y Tunki
+                            </div>
+                            <ol style="font-size: 1em; color: #222; margin-bottom: 12px; padding-left: 18px;">
+                                <li>Escoge la billetera de tu preferencia.</li>
+                                <li>Escanea el QR desde tu celular.</li>
+                                <li>Verifica el monto a pagar a nombre de PagoEfectivo.</li>
+                                <li>Confirma el pago.</li>
+                            </ol>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                                <img src="/img/yape.png" alt="Yape" style="height: 38px;">
+                                <img src="/img/plin.png" alt="Plin" style="height: 38px;">
+                                <img src="/img/bbvawallet.png" alt="BBVA" style="height: 38px;">
+                                <img src="/img/scotibank.png" alt="Scotiabank" style="height: 38px;">
+                                <img src="/img/interbank.png" alt="Interbank" style="height: 38px;">
+                                <img src="/img/ligo.png" alt="Ligo" style="height: 38px;">
+                                <img src="/img/banbif.png" alt="BanBif" style="height: 38px;">
+                                <img src="/img/tinki.png" alt="Tunki" style="height: 38px;">
+                            </div>
+                            <div style="font-size: 0.95em; color: #888; margin-top: 8px;">
+                                Recuerda habilitar tu tarjeta para compras por internet
+                            </div>
                         </div>
                     </div>
                     
@@ -347,12 +434,33 @@
                             <p>Serás redirigido a PayPal para completar el pago de forma segura</p>
                         </div>
                         <div class="input-container">
-                            <label for="email-paypal" class="input-label">Email de PayPal (opcional)</label>
+                            <label for="email-paypal" class="input-label">Email de PayPal (obligatorio)</label>
                             <input id="email-paypal" class="input-field" type="email" placeholder="tu@email.com">
+                        </div>
+                        <div style="display: flex; justify-content: center;">
+                            <button type="button" id="btn-pagar-paypal" class="button paypal-btn" style="margin-top:10px;">
+                                <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" alt="PayPal" style="height:24px; margin-right:10px;">
+                                <span class="text">Pagar con PayPal</span>
+                            </button>
                         </div>
                     </div>
                     
-                    <button type="button" id="confirmar-pedido" class="checkout-btn">Confirmar Pedido</button>
+                    <div id="yape-extra-info" style="display:none;">
+                        <div id="yape-fecha-limite" style="margin-top:14px; color:#333; font-size:1.05em; text-align:center;">
+                            <!-- Aquí se mostrará la fecha límite -->
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="confirmar-pedido" class="button" disabled>
+                        <span class="icono-flecha">
+                            <svg viewBox="0 0 16 16" class="bi bi-cart-check" height="24" width="24" xmlns="http://www.w3.org/2000/svg" fill="#fff">
+                                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"></path>
+                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
+                            </svg>
+                            <span id="circulo-rojo" class="circulo-rojo" style="display:none;"></span>
+                        </span>
+                        <span class="text">Confirmar Pedido</span>
+                    </button>
                 </form>
             </div>
             
@@ -428,7 +536,7 @@
                 </div>
                 
                 <div style="margin-top: 1.5rem; text-align: right;">
-                    <span style="display:inline-block; border-top:1px solid #bbb; width:160px; margin-top:20px; color:#888; font-size:0.95rem;">Firma y sello</span>
+                    <img src="../img/firma.png" alt="Firma" style="width:160px; margin-top:20px; display:inline-block; border-top:1px solid #bbb;">
                 </div>
                 
                 <div class="boleta-footer">
@@ -437,9 +545,19 @@
                 </div>
             </div>
             
-            <div class="paso-navegacion">
-                <button class="btn btn-primary" id="volver-tienda">Volver a la Tienda</button>
-                <button class="btn btn-success" id="descargar-boleta">Descargar Boleta</button>
+            <div class="paso-navegacion mejorada">
+                <button class="btn-volver-tienda" id="volver-tienda">
+                    <span class="icono-btn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </span>
+                    Volver a la Tienda
+                </button>
+                <button class="btn-descargar-boleta" id="descargar-boleta">
+                    <span class="icono-btn">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </span>
+                    Descargar Boleta
+                </button>
             </div>
         </div>
     </div>
