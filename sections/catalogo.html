@@ -20,72 +20,203 @@
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href="#">Novedades</a></li>
-                    <li><a href="#">Hombre</a></li>
+                    <li><a href="/sections/catalogo.html">Hombre</a></li>
                     <li><a href="#">Mujer</a></li>
-                    <li><a href="#">Ofertas</a></li>
                 </ul>
             </nav>
         </div>
     </header>
-
+    <section class="contenedor-titulo">
+        <div class="titulo-hombres">
+            <h2>HOMBRES</h2>
+        </div>
+    </section>
     <main class="main">
         <div class="filters">
             <div class="filters-header">
-                <h3 class="filters-title">Filtros</h3>
-                <button class="reset-filters">Restablecer</button>
+                <h2 class="filters-main-title">
+                    <i class="filter-icon fas fa-sliders-h"></i> Filtros
+                </h2>
+                <button class="reset-filters btn-filter-action">
+                    <i class="fas fa-undo-alt"></i> Restablecer todo
+                </button>
             </div>
             
-            <div class="filter-group">
-                <label for="categoryFilter">Categoría</label>
-                <select id="categoryFilter">
-                    <option value="all">Todas las categorías</option>
-                    <option value="camisas">Camisas</option>
-                    <option value="pantalones">Pantalones</option>
-                    <option value="vestidos">Vestidos</option>
-                    <option value="abrigos">Abrigos</option>
-                    <option value="zapatos">Zapatos</option>
-                </select>
+            <!-- Grupo de filtros - Categoría -->
+            <div class="filter-group" data-filter-group="category">
+                <h3 class="filter-group-title">
+                    <i class="fas fa-tags"></i> Categoría
+                    <span class="title-underline"></span>
+                </h3>
+                
+                <div class="filter-options">
+                    <div class="category-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="camisas">
+                            <span class="checkmark"></span>
+                            Camisas
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="pantalones">
+                            <span class="checkmark"></span>
+                            Pantalones
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="jeans">
+                            <span class="checkmark"></span>
+                            Jeans
+                        </label>
+                    </div>
+                    
+        
+                    
+                    <div class="category-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="abrigos">
+                            <span class="checkmark"></span>
+                            Abrigos
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="chaquetas">
+                            <span class="checkmark"></span>
+                            Chaquetas
+                        </label>
+                    </div>
+                </div>
             </div>
             
-            <div class="filter-group">
-                <label for="priceFilter">Rango de precios</label>
-                <select id="priceFilter">
-                    <option value="all">Todos los precios</option>
-                    <option value="0-100">Menos de S/100</option>
-                    <option value="100-200">S/100 - S/200</option>
-                    <option value="200-500">S/200 - S/500</option>
-                    <option value="500+">Más de S/500</option>
-                </select>
+            <!-- Grupo de filtros - Talla -->
+            <div class="filter-group" data-filter-group="size">
+                <h3 class="filter-group-title">
+                    <i class="fas fa-ruler"></i> Talla
+                    <span class="title-underline"></span>
+                </h3>
+                
+                <div class="filter-options">
+                    <div class="size-grid">
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="XS">
+                            <span class="size-checkmark">XS</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="S">
+                            <span class="size-checkmark">S</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="M">
+                            <span class="size-checkmark">M</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="L">
+                            <span class="size-checkmark">L</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="XL">
+                            <span class="size-checkmark">XL</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="XXL">
+                            <span class="size-checkmark">XXL</span>
+                        </label>
+                    </div>
+                    
+                    <div class="size-grid">
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="28">
+                            <span class="size-checkmark">28</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="30">
+                            <span class="size-checkmark">30</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="32">
+                            <span class="size-checkmark">32</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="34">
+                            <span class="size-checkmark">34</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="36">
+                            <span class="size-checkmark">36</span>
+                        </label>
+                        
+                        <label class="size-checkbox-container">
+                            <input type="checkbox" class="filter-checkbox" value="38">
+                            <span class="size-checkmark">38</span>
+                        </label>
+                    </div>
+                </div>
             </div>
             
-            <div class="filter-group">
-                <label for="sizeFilter">Talla</label>
-                <select id="sizeFilter">
-                    <option value="all">Todas las tallas</option>
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
+            <!-- Grupo de filtros - Precio -->
+            <div class="filter-group" data-filter-group="price">
+                <h3 class="filter-group-title">
+                    <i class="fas fa-tag"></i> Rango de Precio
+                    <span class="title-underline"></span>
+                </h3>
+                
+                <div class="filter-options">
+                    <div class="price-range-container">
+                        <!-- Selector de rango con opciones rápidas -->
+                        <div class="price-quick-select">
+                            <button class="price-option" data-min="0" data-max="100">Menos de S/100</button>
+                            <button class="price-option" data-min="100" data-max="200">S/100-200</button>
+                            <button class="price-option" data-min="200" data-max="500">S/200-500</button>
+                            <button class="price-option" data-min="500" data-max="1000">S/500+</button>
+                        </div>
+                        
+                        <!-- Inputs de precio -->
+                        <div class="price-inputs">
+                            <div class="price-input">
+                                <span class="currency">S/</span>
+                                <input type="number" id="minPrice" placeholder="Mín" min="0" value="0">
+                            </div>
+                            <div class="price-separator">-</div>
+                            <div class="price-input">
+                                <span class="currency">S/</span>
+                                <input type="number" id="maxPrice" placeholder="Máx" min="0" value="1000">
+                            </div>
+                        </div>
+                        
+                        <!-- Slider de rango mejorado -->
+                        <div class="price-slider-container">
+                            <div class="price-slider">
+                                <div class="slider-track"></div>
+                                <div class="slider-range"></div>
+                                <input type="range" min="0" max="1000" value="0" id="lowerPrice" class="slider-thumb">
+                                <input type="range" min="0" max="1000" value="1000" id="upperPrice" class="slider-thumb">
+                            </div>
+                            <div class="price-labels">
+                                <span>S/0</span>
+                                <span>S/1000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="filter-group">
-                <label for="colorFilter">Color</label>
-                <select id="colorFilter">
-                    <option value="all">Todos los colores</option>
-                    <option value="negro">Negro</option>
-                    <option value="blanco">Blanco</option>
-                    <option value="azul">Azul</option>
-                    <option value="rojo">Rojo</option>
-                    <option value="verde">Verde</option>
-                </select>
-            </div>
+            <!-- Filtros activos -->
+            <div class="active-filters" id="activeFilters"></div>
         </div>
-
+    
         <div class="product-container">
             <div class="product-grid" id="productGrid">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
         </div>
     </main>
 
@@ -93,7 +224,7 @@
         <div class="footer-container">
             <div class="footer-section">
                 <h3>LUXE STYLE</h3>
-                <p>Moda premium con estilo y elegancia para el cliente exigente.</p>
+                <p>Moda  con estilo, elegancia para el cliente exigente <span>Y MUCHO SWAGGGG</span></p>
             </div>
             <div class="footer-section">
                 <h3>Contacto</h3>

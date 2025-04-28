@@ -1,4 +1,6 @@
-// Base de datos de productos
+// =============================================
+// BASE DE DATOS DE PRODUCTOS
+// =============================================
 const productos = [
     {
         id: 1,
@@ -7,7 +9,7 @@ const productos = [
         descripcion: "Camisa de vestir en algodón Oxford de alta calidad con corte clásico y detalles en costuras reforzadas.",
         precio: 189.90,
         precioAnterior: 229.90,
-        imagen: "https://topitop.vteximg.com.br/arquivos/ids/365836-1000-1248/2024378_1.jpg?v=638615767478600000https://topitop.vteximg.com.br/arquivos/ids/365836-1000-1248/2024378_1.jpg?v=638615767478600000",
+        imagen: "https://topitop.vteximg.com.br/arquivos/ids/365836-1000-1248/2024378_1.jpg?v=638615767478600000",
         tallas: ["S", "M", "L", "XL"],
         destacado: true
     },
@@ -41,18 +43,18 @@ const productos = [
         precio: 279.90,
         precioAnterior: 349.90,
         imagen: "https://topitop.vteximg.com.br/arquivos/ids/382564-1000-1248/3129866_1.jpg?v=638804280342330000",
-        tallas: ["XS", "S", "M"],
+        tallas: ["28", "30", "32", "34"],
         destacado: true
     },
     {
         id: 5,
         nombre: "Polera Hombre Ernan Negro",
-        categoria: "polera",
-        descripcion: "polera Derby en cuero italiano genuino con suela de goma antideslizante y plantilla acolchonada.",
+        categoria: "poleras",
+        descripcion: "Polera Derby en cuero italiano genuino con suela de goma antideslizante y plantilla acolchonada.",
         precio: 389.90,
         precioAnterior: 459.90,
         imagen: "https://topitop.vteximg.com.br/arquivos/ids/380629-1000-1248/3095404_1.jpg?v=638793140980700000",
-        tallas: ["38", "39", "40", "41", "42"],
+        tallas: ["S", "M", "L", "XL"],
         destacado: false
     },
     {
@@ -69,7 +71,7 @@ const productos = [
     {
         id: 7,
         nombre: "Jeans Slim Fit Elastano",
-        categoria: "pantalones",
+        categoria: "jeans",
         descripcion: "Jeans con mezcla de elastano para mayor comodidad, corte slim fit y lavado oscuro premium.",
         precio: 179.90,
         precioAnterior: 219.90,
@@ -124,7 +126,7 @@ const productos = [
     {
         id: 12,
         nombre: "Chaqueta Bomber Premium",
-        categoria: "abrigos",
+        categoria: "chaquetas",
         descripcion: "Chaqueta bomber en nylon resistente al agua con forro interior de algodón y ribetes de cuero.",
         precio: 379.90,
         precioAnterior: 449.90,
@@ -134,7 +136,9 @@ const productos = [
     }
 ];
 
-// Función para renderizar productos
+// =============================================
+// FUNCIONES PARA RENDERIZAR PRODUCTOS
+// =============================================
 function renderProductos(productosAMostrar) {
     const productGrid = document.getElementById('productGrid');
     productGrid.innerHTML = '';
@@ -160,7 +164,7 @@ function renderProductos(productosAMostrar) {
         productCard.innerHTML = `
             <div class="product-image">
                 ${badge}
-                <img src="${producto.imagen}" alt="${producto.nombre}">
+                <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
             </div>
             <div class="product-info">
                 <div class="product-category">${producto.categoria.toUpperCase()}</div>
@@ -168,7 +172,7 @@ function renderProductos(productosAMostrar) {
                 <p class="product-description">${producto.descripcion}</p>
                 <div class="product-price">
                     S/ ${producto.precio.toFixed(2)}
-                    ${producto.precioAnterior ? `<span>S/ ${producto.precioAnterior.toFixed(2)}</span>` : ''}
+                    ${producto.precioAnterior ? `<span class="old-price">S/ ${producto.precioAnterior.toFixed(2)}</span>` : ''}
                 </div>
                 <div class="product-sizes">${sizes}</div>
                 <button class="add-to-cart">Añadir al carrito</button>
@@ -179,103 +183,319 @@ function renderProductos(productosAMostrar) {
     });
 
     // Añadir event listeners a los botones de talla
-    document.querySelectorAll('.size-option').forEach(option => {
-        option.addEventListener('click', function() {
-            this.classList.toggle('selected');
+    document.querySelectorAll('.product-sizes').forEach(sizeContainer => {
+        const sizeOptions = sizeContainer.querySelectorAll('.size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(opt => opt.classList.remove('selected')); // Quita seleccionado de todos
+                this.classList.add('selected'); // Selecciona solo uno
+            });
         });
     });
 }
 
-// Nueva función para mostrar sugerencias de búsqueda
+// =============================================
+// FILTROS Y FUNCIONALIDAD
+// =============================================
+
+// Estado de los filtros
+const state = {
+    categorias: [],
+    tallas: [],
+    precioMin: 0,
+    precioMax: 1000,
+    terminoBusqueda: ''
+};
+
+// Función para aplicar todos los filtros
+function aplicarFiltros() {
+    const productosFiltrados = productos.filter(producto => {
+        // Filtro por categoría
+        const categoriaMatch = state.categorias.length === 0 || 
+                             state.categorias.includes(producto.categoria);
+        
+        // Filtro por talla
+        const tallaMatch = state.tallas.length === 0 || 
+                          producto.tallas.some(talla => state.tallas.includes(talla));
+        
+        // Filtro por precio
+        const precioMatch = producto.precio >= state.precioMin && 
+                           producto.precio <= state.precioMax;
+        
+        // Filtro por búsqueda
+        const busquedaMatch = state.terminoBusqueda === '' ||
+                            producto.nombre.toLowerCase().includes(state.terminoBusqueda.toLowerCase()) ||
+                            producto.descripcion.toLowerCase().includes(state.terminoBusqueda.toLowerCase()) ||
+                            producto.categoria.toLowerCase().includes(state.terminoBusqueda.toLowerCase());
+        
+        return categoriaMatch && tallaMatch && precioMatch && busquedaMatch;
+    });
+    
+    renderProductos(productosFiltrados);
+    actualizarFiltrosActivos();
+    actualizarOpcionesTallas();
+}
+
+// Función para actualizar la visualización de filtros activos
+function actualizarFiltrosActivos() {
+    const activeFiltersContainer = document.getElementById('activeFilters');
+    activeFiltersContainer.innerHTML = '';
+    
+    // Filtros de categoría activos
+    state.categorias.forEach(categoria => {
+        const filterTag = document.createElement('div');
+        filterTag.className = 'active-filter-tag';
+        filterTag.innerHTML = `
+            ${categoria}
+            <button class="remove-filter" data-type="categoria" data-value="${categoria}">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        activeFiltersContainer.appendChild(filterTag);
+    });
+    
+    // Filtros de talla activos
+    state.tallas.forEach(talla => {
+        const filterTag = document.createElement('div');
+        filterTag.className = 'active-filter-tag';
+        filterTag.innerHTML = `
+            ${talla}
+            <button class="remove-filter" data-type="talla" data-value="${talla}">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        activeFiltersContainer.appendChild(filterTag);
+    });
+    
+    // Filtro de precio activo (si no es el rango completo)
+    if (state.precioMin !== 0 || state.precioMax !== 1000) {
+        const filterTag = document.createElement('div');
+        filterTag.className = 'active-filter-tag';
+        filterTag.innerHTML = `
+            S/${state.precioMin} - S/${state.precioMax}
+            <button class="remove-filter" data-type="precio">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        activeFiltersContainer.appendChild(filterTag);
+    }
+    
+    // Event listeners para botones de eliminar filtro
+    document.querySelectorAll('.remove-filter').forEach(button => {
+        button.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            const value = this.getAttribute('data-value');
+            
+            if (type === 'categoria') {
+                state.categorias = state.categorias.filter(cat => cat !== value);
+                document.querySelector(`.filter-checkbox[value="${value}"]`).checked = false;
+            } else if (type === 'talla') {
+                state.tallas = state.tallas.filter(t => t !== value);
+                document.querySelector(`.filter-checkbox[value="${value}"]`).checked = false;
+            } else if (type === 'precio') {
+                state.precioMin = 0;
+                state.precioMax = 1000;
+                document.getElementById('minPrice').value = 0;
+                document.getElementById('maxPrice').value = 1000;
+                document.getElementById('lowerPrice').value = 0;
+                document.getElementById('upperPrice').value = 1000;
+            }
+            
+            aplicarFiltros();
+        });
+    });
+}
+
+// Función para actualizar las opciones de tallas disponibles según categorías seleccionadas
+function actualizarOpcionesTallas() {
+    // Obtener productos filtrados (sin contar el filtro de talla)
+    const productosFiltrados = productos.filter(producto => {
+        // Filtro por categoría
+        const categoriaMatch = state.categorias.length === 0 || 
+                             state.categorias.includes(producto.categoria);
+        
+        // Filtro por precio
+        const precioMatch = producto.precio >= state.precioMin && 
+                           producto.precio <= state.precioMax;
+        
+        // Filtro por búsqueda
+        const busquedaMatch = state.terminoBusqueda === '' ||
+                            producto.nombre.toLowerCase().includes(state.terminoBusqueda.toLowerCase()) ||
+                            producto.descripcion.toLowerCase().includes(state.terminoBusqueda.toLowerCase()) ||
+                            producto.categoria.toLowerCase().includes(state.terminoBusqueda.toLowerCase());
+        
+        return categoriaMatch && precioMatch && busquedaMatch;
+    });
+    
+    // Determinar qué tipo de tallas mostrar (letras o números)
+    let mostrarTallasLetras = true;
+    let mostrarTallasNumeros = true;
+    
+    if (state.categorias.length > 0) {
+        // Si hay categorías seleccionadas, verificar qué tipo de tallas mostrar
+        const categoriasConTallasNumeros = ['pantalones', 'jeans'];
+        mostrarTallasLetras = !state.categorias.every(cat => categoriasConTallasNumeros.includes(cat));
+        mostrarTallasNumeros = state.categorias.some(cat => categoriasConTallasNumeros.includes(cat));
+    }
+    
+    // Obtener tallas disponibles
+    const tallasDisponibles = {
+        letras: new Set(),
+        numeros: new Set()
+    };
+    
+    productosFiltrados.forEach(producto => {
+        producto.tallas.forEach(talla => {
+            if (isNaN(talla)) {
+                tallasDisponibles.letras.add(talla);
+            } else {
+                tallasDisponibles.numeros.add(talla);
+            }
+        });
+    });
+    
+    // Actualizar visibilidad de los grupos de tallas
+    document.querySelectorAll('.size-grid').forEach((grid, index) => {
+        if ((index === 0 && !mostrarTallasLetras) || (index === 1 && !mostrarTallasNumeros)) {
+            grid.style.display = 'none';
+        } else {
+            grid.style.display = 'grid';
+        }
+    });
+    
+    // Deshabilitar checkboxes de tallas no disponibles
+    document.querySelectorAll('.filter-group[data-filter-group="size"] .filter-checkbox').forEach(checkbox => {
+        const value = checkbox.value;
+        const isLetra = isNaN(value);
+        const isNumero = !isLetra;
+        
+        let disponible = false;
+        
+        if (isLetra && mostrarTallasLetras) {
+            disponible = tallasDisponibles.letras.has(value);
+        } else if (isNumero && mostrarTallasNumeros) {
+            disponible = tallasDisponibles.numeros.has(value);
+        }
+        
+        checkbox.disabled = !disponible;
+        checkbox.parentElement.style.opacity = disponible ? '1' : '0.5';
+        
+        // Si la talla no está disponible y estaba seleccionada, quitarla del estado
+        if (!disponible && state.tallas.includes(value)) {
+            state.tallas = state.tallas.filter(t => t !== value);
+            checkbox.checked = false;
+        }
+    });
+}
+
+// =============================================
+// BÚSQUEDA Y SUGERENCIAS
+// =============================================
+
 function mostrarSugerencias(termino) {
     const sugerenciasContainer = document.getElementById('sugerenciasBusqueda');
-    if (!termino || termino.length < 2) {
-        sugerenciasContainer.innerHTML = '';
+    sugerenciasContainer.innerHTML = '';
+    
+    if (termino.length < 2) {
         sugerenciasContainer.style.display = 'none';
         return;
     }
-
+    
     const terminoLower = termino.toLowerCase();
-    const sugerencias = productos.filter(producto => {
-        return (
-            producto.id.toString().includes(terminoLower) ||
-            producto.nombre.toLowerCase().includes(terminoLower) ||
-            producto.categoria.toLowerCase().includes(terminoLower) ||
-            producto.descripcion.toLowerCase().includes(terminoLower)
-        );
-    }).slice(0, 5); // Limitar a 5 sugerencias
-
-    if (sugerencias.length === 0) {
-        sugerenciasContainer.innerHTML = '<div class="sugerencia-item">No se encontraron coincidencias</div>';
-    } else {
-        sugerenciasContainer.innerHTML = sugerencias.map(producto => 
-            `<div class="sugerencia-item" data-id="${producto.id}">
-                <img src="${producto.imagen}" alt="${producto.nombre}">
-                <div>
-                    <div class="sugerencia-nombre">${producto.nombre}</div>
-                    <div class="sugerencia-categoria">${producto.categoria}</div>
-                </div>
-            </div>`
-        ).join('');
-    }
-
-    sugerenciasContainer.style.display = sugerencias.length ? 'block' : 'none';
-}
-
-// Función para manejar la selección de una sugerencia
-function seleccionarSugerencia(idProducto) {
-    const producto = productos.find(p => p.id === idProducto);
-    if (producto) {
-        document.getElementById('searchInput').value = producto.nombre;
-        document.getElementById('sugerenciasBusqueda').style.display = 'none';
-        buscarProductos();
-        // Opcional: desplazarse al producto seleccionado
-        setTimeout(() => {
-            const productElement = document.querySelector(`[data-product-id="${idProducto}"]`);
-            if (productElement) {
-                productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                productElement.classList.add('highlight');
-                setTimeout(() => productElement.classList.remove('highlight'), 2000);
-            }
-        }, 300);
-    }
-}
-
-// Función para buscar productos
-function buscarProductos() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const categoryFilter = document.getElementById('categoryFilter').value;
-    const priceFilter = document.getElementById('priceFilter').value;
-
-    const productosFiltrados = productos.filter(producto => {
-        // Filtro por búsqueda (ahora incluye ID)
-        const matchesSearch = 
-            producto.id.toString().includes(searchTerm) ||
-            producto.nombre.toLowerCase().includes(searchTerm) || 
-            producto.categoria.toLowerCase().includes(searchTerm) ||
-            producto.descripcion.toLowerCase().includes(searchTerm);
+    const sugerencias = [];
+    
+    // Buscar en productos
+    productos.forEach(producto => {
+        const matches = [
+            producto.nombre.toLowerCase().includes(terminoLower),
+            producto.descripcion.toLowerCase().includes(terminoLower),
+            producto.categoria.toLowerCase().includes(terminoLower)
+        ];
         
-        // Resto de los filtros (se mantienen igual)
-        const matchesCategory = categoryFilter === 'all' || producto.categoria === categoryFilter;
-        
-        let matchesPrice = true;
-        if (priceFilter !== 'all') {
-            const [min, max] = priceFilter.split('-');
-            if (max) {
-                matchesPrice = producto.precio >= parseInt(min) && producto.precio <= parseInt(max);
-            } else {
-                matchesPrice = producto.precio >= parseInt(min.replace('+', ''));
-            }
+        if (matches.some(m => m)) {
+            sugerencias.push({
+                tipo: 'producto',
+                id: producto.id,
+                texto: producto.nombre,
+                categoria: producto.categoria
+            });
         }
-        
-        return matchesSearch && matchesCategory && matchesPrice;
     });
-
-    renderProductos(productosFiltrados);
+    
+    // Buscar en categorías
+    const categoriasUnicas = [...new Set(productos.map(p => p.categoria))];
+    categoriasUnicas.forEach(categoria => {
+        if (categoria.toLowerCase().includes(terminoLower)) {
+            sugerencias.push({
+                tipo: 'categoria',
+                texto: categoria,
+                categoria: null
+            });
+        }
+    });
+    
+    // Limitar a 5 sugerencias
+    const sugerenciasMostrar = sugerencias.slice(0, 5);
+    
+    if (sugerenciasMostrar.length === 0) {
+        sugerenciasContainer.style.display = 'none';
+        return;
+    }
+    
+    // Renderizar sugerencias
+    sugerenciasMostrar.forEach(sugerencia => {
+        const item = document.createElement('div');
+        item.className = 'sugerencia-item';
+        item.setAttribute('data-id', sugerencia.id || '');
+        item.innerHTML = `
+            <i class="fas fa-${sugerencia.tipo === 'producto' ? 'tshirt' : 'tag'}"></i>
+            <div>
+                <div class="sugerencia-texto">${sugerencia.texto}</div>
+                ${sugerencia.categoria ? `<div class="sugerencia-categoria">${sugerencia.categoria}</div>` : ''}
+            </div>
+        `;
+        sugerenciasContainer.appendChild(item);
+    });
+    
+    sugerenciasContainer.style.display = 'block';
 }
 
-// Actualización de los event listeners
-document.addEventListener('DOMContentLoaded', () => {
+function seleccionarSugerencia(id) {
+    const producto = productos.find(p => p.id === id);
+    if (producto) {
+        // Mostrar solo este producto
+        renderProductos([producto]);
+        document.getElementById('activeFilters').innerHTML = `
+            <div class="active-filter-tag">
+                Resultado de búsqueda: ${producto.nombre}
+                <button class="remove-filter" data-type="busqueda">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        // Añadir event listener para el botón de limpiar
+        document.querySelector('.remove-filter[data-type="busqueda"]').addEventListener('click', () => {
+            state.terminoBusqueda = '';
+            document.getElementById('searchInput').value = '';
+            aplicarFiltros();
+        });
+    }
+    
+    document.getElementById('sugerenciasBusqueda').style.display = 'none';
+}
+
+
+
+
+
+
+
+// =============================================
+// INICIALIZACIÓN
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Renderizar todos los productos al inicio
     renderProductos(productos);
     
     // Crear contenedor para sugerencias
@@ -284,36 +504,153 @@ document.addEventListener('DOMContentLoaded', () => {
     sugerenciasContainer.id = 'sugerenciasBusqueda';
     sugerenciasContainer.className = 'sugerencias-busqueda';
     searchContainer.appendChild(sugerenciasContainer);
-
-    // Event listeners
-    document.getElementById('searchInput').addEventListener('input', function() {
-        buscarProductos();
-        mostrarSugerencias(this.value);
+    
+    // Event listeners para checkboxes de categoría
+    document.querySelectorAll('.filter-group[data-filter-group="category"] .filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const value = this.value;
+            
+            if (this.checked) {
+                state.categorias.push(value);
+            } else {
+                state.categorias = state.categorias.filter(cat => cat !== value);
+            }
+            
+            aplicarFiltros();
+        });
     });
     
-    document.getElementById('searchBtn').addEventListener('click', buscarProductos);
-    document.getElementById('categoryFilter').addEventListener('change', buscarProductos);
-    document.getElementById('priceFilter').addEventListener('change', buscarProductos);
-
+    // Event listeners para checkboxes de talla
+    document.querySelectorAll('.filter-group[data-filter-group="size"] .filter-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const value = this.value;
+            
+            if (this.checked) {
+                state.tallas.push(value);
+            } else {
+                state.tallas = state.tallas.filter(t => t !== value);
+            }
+            
+            aplicarFiltros();
+        });
+    });
+    
+    // Event listeners para botones de rango de precio rápido
+    document.querySelectorAll('.price-option').forEach(button => {
+        button.addEventListener('click', function() {
+            const min = parseInt(this.getAttribute('data-min'));
+            const max = parseInt(this.getAttribute('data-max'));
+            
+            state.precioMin = min;
+            state.precioMax = max;
+            
+            document.getElementById('minPrice').value = min;
+            document.getElementById('maxPrice').value = max;
+            document.getElementById('lowerPrice').value = min;
+            document.getElementById('upperPrice').value = max;
+            
+            aplicarFiltros();
+        });
+    });
+    
+    // Event listeners para inputs de precio manual
+    document.getElementById('minPrice').addEventListener('input', function() {
+        const value = parseInt(this.value) || 0;
+        state.precioMin = value;
+        document.getElementById('lowerPrice').value = value;
+        aplicarFiltros();
+    });
+    
+    document.getElementById('maxPrice').addEventListener('input', function() {
+        const value = parseInt(this.value) || 1000;
+        state.precioMax = value;
+        document.getElementById('upperPrice').value = value;
+        aplicarFiltros();
+    });
+    
+    // Event listeners para sliders de rango de precio
+    document.getElementById('lowerPrice').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        state.precioMin = value;
+        document.getElementById('minPrice').value = value;
+        aplicarFiltros();
+    });
+    
+    document.getElementById('upperPrice').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        state.precioMax = value;
+        document.getElementById('maxPrice').value = value;
+        aplicarFiltros();
+    });
+    
+    // Event listener para botón de resetear filtros
+    document.querySelector('.reset-filters').addEventListener('click', function() {
+        // Resetear estado
+        state.categorias = [];
+        state.tallas = [];
+        state.precioMin = 0;
+        state.precioMax = 1000;
+        state.terminoBusqueda = '';
+        
+        // Desmarcar checkboxes
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Resetear inputs de precio
+        document.getElementById('minPrice').value = 0;
+        document.getElementById('maxPrice').value = 1000;
+        document.getElementById('lowerPrice').value = 0;
+        document.getElementById('upperPrice').value = 1000;
+        
+        // Resetear búsqueda
+        document.getElementById('searchInput').value = '';
+        
+        // Aplicar filtros (mostrar todos los productos)
+        aplicarFiltros();
+    });
+    
+    // Sincronizar sliders para que no se crucen
+    const lowerSlider = document.getElementById('lowerPrice');
+    const upperSlider = document.getElementById('upperPrice');
+    
+    lowerSlider.addEventListener('input', function() {
+        if (parseInt(this.value) > parseInt(upperSlider.value)) {
+            upperSlider.value = this.value;
+            document.getElementById('maxPrice').value = this.value;
+            state.precioMax = parseInt(this.value);
+        }
+    });
+    
+    upperSlider.addEventListener('input', function() {
+        if (parseInt(this.value) < parseInt(lowerSlider.value)) {
+            lowerSlider.value = this.value;
+            document.getElementById('minPrice').value = this.value;
+            state.precioMin = parseInt(this.value);
+        }
+    });
+    
+    // Event listener para búsqueda en tiempo real
+    document.getElementById('searchInput').addEventListener('input', function() {
+        state.terminoBusqueda = this.value;
+        mostrarSugerencias(this.value);
+        aplicarFiltros();
+    });
+    
     // Delegación de eventos para las sugerencias
     sugerenciasContainer.addEventListener('click', function(e) {
         const sugerenciaItem = e.target.closest('.sugerencia-item');
-        if (sugerenciaItem) {
+        if (sugerenciaItem && sugerenciaItem.getAttribute('data-id')) {
             seleccionarSugerencia(parseInt(sugerenciaItem.getAttribute('data-id')));
         }
     });
-
+    
     // Ocultar sugerencias al hacer clic fuera
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.search-container')) {
             sugerenciasContainer.style.display = 'none';
         }
     });
-});
-
-// Inicializar la página con todos los productos
-document.addEventListener('DOMContentLoaded', () => {
-    renderProductos(productos);
 });
 
 // Funcionalidad del carrito
