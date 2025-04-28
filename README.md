@@ -32,6 +32,7 @@ tiendavirtual/
 - **Yusmer** → 📇 Contacto / Sobre Nosotros
 - **Luis** → 👤 Home / Inicio
 - **Yons** → 📦 Carrito de Compras / Checkout
+- **Shakira** 
 
 ## 🛠 Tecnologías Usadas
 
