@@ -84,38 +84,69 @@
     margin: 0 auto;
     padding: 0 2rem;
   }
-  
-  .logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--color-black);
-    position: relative;
-  }
-  
-  .logo span {
-    color: var(--color-primary);
-    font-weight: 800;
-  }
-  
-  .logo::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--gradient-primary);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s ease;
-  }
-  
-  .logo:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-  
+
+
+
+  /* ==================== LOGO ==================== */
+  /* Remove default list bullet and padding/margin */
+.logo li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset link: no underline, inherit color */
+.logo a,
+.logo a:visited,
+.logo a:hover,
+.logo a:focus {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block; /* so hover area matches text size */
+}
+
+/* Base logo styles */
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-black);
+  position: relative;
+}
+
+/* Highlighted part (“SWAGG”) */
+.logo span {
+  color: var(--color-primary);
+  font-weight: 800;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+/* Animated underline (optional) */
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--gradient-primary);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease;
+}
+
+/* Hover: only scale the <span>, keep “STYLE” color unchanged */
+.logo a:hover span {
+  transform: scale(1.1);
+}
+
+/* Hover: reveal underline */
+.logo a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
   /* ==================== SEARCH ==================== */
   .search-container {
     position: relative;
@@ -680,7 +711,7 @@
     width: 100%;
     height: 4px;
     pointer-events: none;
-    -webkit-appearance: none;
+
     z-index: 3;
     background: transparent;
 }
@@ -975,13 +1006,13 @@
     color: rgba(255, 255, 255, 0.8);
     position: relative;
 }
-.footer-section p span {
+.footer-section p fo-span {
     font-size: 1.2rem;
     font-weight: bold;
     color: #fff;
     background: linear-gradient(90deg, #0374a8, #3b759c, #a0c9eb);
     background-size: 200% auto;
-    -webkit-background-clip: text;
+
     color: transparent;
     animation: gradientAnimation 3s ease infinite, moveText 2s ease-in-out infinite;
     display: inline-block;
